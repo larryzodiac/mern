@@ -4,7 +4,7 @@ Year 4 Advanced JavaScript Module Assignment w/ [MonogoDB](https://www.mongodb.c
 
 Assessment: _develop a full web application stack using MongoDB, Express, React and Node (MERN)._
 
-Site hosted with [Heroku](https://www.heroku.com/) @ [test]().
+Site hosted with [Glitch](https://glitch.com/) @ [https://larryzodiac-mern.glitch.me/](https://larryzodiac-mern.glitch.me/).
 
 # Local Setup
 
