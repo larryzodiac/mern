@@ -1,6 +1,6 @@
 # MERN Development
 
-Year 4 Advanced JavaScript Module Assignment w/ [MonogoDB](https://www.mongodb.com/), [Express](https://expressjs.com/), [React](https://reactjs.org/), [Node](https://nodejs.org/en/), [Three](https://threejs.org/) + [Material](https://material.io/)
+Year 4 Advanced JavaScript Module Assignment w/ [MonogoDB](https://www.mongodb.com/), [Express](https://expressjs.com/), [React](https://reactjs.org/), [Node](https://nodejs.org/en/) + [Material](https://material.io/)
 
 Assessment: _develop a full web application stack using MongoDB, Express, React and Node (MERN)._
 
