@@ -4,4 +4,16 @@
   App.scss
 */
 
+:root {
+  --mdc-theme-primary: #fff;
+  --mdc-theme-secondary: #feeae6;
+  --mdc-theme-on-primary: #0;
+  --mdc-theme-on-secondary: #fff;
+}
+
+@import '@material/react-button/index.scss';
 @import '@material/react-layout-grid/index.scss';
+@import '@material/react-material-icon/index.scss';
+@import '@material/react-top-app-bar/index.scss';
+
+@import './style-overrides/react-top-app-bar-overrides';
