@@ -13,7 +13,6 @@
 */
 
 import React, { Component } from 'react';
-// My Components
 
 /*
   World acts as a homepage. Browse or sign in 🏠
@@ -21,7 +20,7 @@ import React, { Component } from 'react';
 
 class World extends Component {
   constructor(props) {
-    super();
+    super(props);
     this.state = {};
   }
 

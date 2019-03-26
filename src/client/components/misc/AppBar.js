@@ -6,15 +6,14 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 // Material Components
 import Button from '@material/react-button';
 import TopAppBar, {
   TopAppBarRow,
   TopAppBarSection,
   TopAppBarTitle,
-} from '@material/react-top-app-bar';
-import MaterialIcon from '@material/react-material-icon';
+} from '@material/react-top-app-bar'
 
 /*
   AppBar used for navigation 🚩
@@ -22,7 +21,7 @@ import MaterialIcon from '@material/react-material-icon';
 
 class AppBar extends Component {
   constructor(props) {
-    super();
+    super(props);
     this.state = {};
   }
 
@@ -30,14 +29,14 @@ class AppBar extends Component {
     const { loginSuccess } = this.props;
     return (
       <div>
-        <TopAppBar className='top-app-bar-custom'>
+        <TopAppBar className="top-app-bar-custom">
           <TopAppBarRow>
-            
-            <TopAppBarSection align='start'>
+
+            <TopAppBarSection align="start">
               <TopAppBarTitle>GEE-SUZ</TopAppBarTitle>
             </TopAppBarSection>
-            
-            <TopAppBarSection align='end'>
+
+            <TopAppBarSection align="end">
               {loginSuccess ? (
                 <div>Wow logged in</div>
               ) : (
@@ -46,12 +45,12 @@ class AppBar extends Component {
                     <Button>Sign in</Button>
                   </Link>
                   <Link to="/Signup">
-                    <Button outlined >Get Started</Button>
+                    <Button outlined>Get Started</Button>
                   </Link>
                 </div>
               )}
             </TopAppBarSection>
-            
+
           </TopAppBarRow>
         </TopAppBar>
       </div>
@@ -60,7 +59,7 @@ class AppBar extends Component {
 }
 
 AppBar.propTypes = {
-  loginSuccess: PropTypes.bool.isRequired
+  loginSuccess: PropTypes.bool.isRequired,
 };
 
 

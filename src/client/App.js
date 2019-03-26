@@ -18,10 +18,11 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import './App.scss';
 // Material Components
 import { TopAppBarFixedAdjust } from '@material/react-top-app-bar';
+import { Grid } from '@material/react-layout-grid';
 // My Components
-import World from './components/world/World';
-import Signin from './components/portal/Signin';
-import Signup from './components/portal/Signup';
+import World from './components/World';
+import Signin from './components/Signin';
+import Signup from './components/Signup';
 import AppBar from './components/misc/AppBar';
 
 /*
@@ -30,9 +31,9 @@ import AppBar from './components/misc/AppBar';
 
 class App extends Component {
   constructor(props) {
-    super();
+    super(props);
     this.state = {
-      loginSuccess: false
+      loginSuccess: false,
     };
   }
 
@@ -42,9 +43,11 @@ class App extends Component {
       <BrowserRouter>
         <AppBar loginSuccess={loginSuccess} />
         <TopAppBarFixedAdjust>
-          <Route exact path="/" component={World} />
-          <Route path="/signin" render={() => <Signin />} />
-          <Route path="/signup" render={() => <Signup />} />
+          <Grid>
+            <Route exact path="/" component={World} />
+            <Route path="/signin" render={() => <Signin />} />
+            <Route path="/signup" render={() => <Signup />} />
+          </Grid>
         </TopAppBarFixedAdjust>
       </BrowserRouter>
     );
