@@ -45,13 +45,17 @@ const userSchema = new Schema({
 //   }
 // });
 
-// userSchema.pre('save', (next) => {
-//   if () {
-//
-//   } else {
-//     next();
-//   }
-// });
+/*
+  '.pre' is mongoose middleware (document lifecycle hooks).
+  '.pre' middleware functions are executed one after another, when each middleware calls next.
+*/
+userSchema.pre('save', (next) => {
+  if (this.isNew || this.isModified('password')) {
+
+  } else {
+    next();
+  }
+});
 
 const User = mongoose.model('User', userSchema);
 
