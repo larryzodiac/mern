@@ -27,7 +27,7 @@ const server = express();
 // URL to our DB - loaded from an env variables
 const dbRoute = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
 // const dbName = process.env.DB;
-let dbConnection;
+// let dbConnection;
 
 mongoose.connect(dbRoute, { useNewUrlParser: true }).then(
   // client => client.db(dbName),
