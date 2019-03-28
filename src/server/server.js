@@ -11,7 +11,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const User = require('./schema');
+const User = require('./models/User');
 const passport = require('./passport');
 
 // loads environment variables from a .env file into process.env
@@ -28,6 +28,10 @@ const server = express();
 const dbURI = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
 // const dbName = process.env.DB;
 // let dbConnection;
+
+console.log(process.env.USER);
+console.log(process.env.PASS);
+console.log(process.env.HOST);
 
 mongoose.connect(dbURI, { useNewUrlParser: true }, (err) => {
   if (err) {
@@ -91,4 +95,23 @@ server.get('/api/home', (req, res) => {
 
 server.get('/api/secret', (req, res) => {
   res.send('The password is potato');
+});
+
+// POST route to register a user
+server.post('/api/signup', (req, res) => {
+  const { username, email, password } = req.body;
+  const user = new User({ username, email, password });
+  console.log(username);
+  console.log(email);
+  console.log(password);
+  console.log(user);
+  user.save((err) => {
+    if (err) {
+      console.log('');
+      console.log(err);
+      res.status(500).send('Error registering new user please try again.');
+    } else {
+      res.status(200).send('Welcome to the club!');
+    }
+  });
 });

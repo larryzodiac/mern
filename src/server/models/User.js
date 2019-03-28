@@ -3,7 +3,7 @@
 /*
   Evan MacHale - N00150552
   23.03.19
-  schema.js
+  User.js Model Object
 */
 
 const mongoose = require('mongoose');
@@ -26,37 +26,31 @@ const userSchema = new Schema({
 // userSchema.methods.checkPassword = p => bcrypt.compareSync(p, this.password);
 // userSchema.methods.hash = p => bcrypt.hashSync(p, 10);
 
-// userSchema.pre('save', function (next) {
-//   // Check if document is new or a new password has been set
-//   if (this.isNew || this.isModified('password')) {
-//     // Saving reference to this because of changing scopes
-//     const document = this;
-//     bcrypt.hash(document.password, 10,
-//       (err, hashedPassword) => {
-//         if (err) {
-//           next(err);
-//         } else {
-//           document.password = hashedPassword;
-//           next();
-//         }
-//       });
-//   } else {
-//     next();
-//   }
-// });
-
 /*
   '.pre' is mongoose middleware (document lifecycle hooks).
   '.pre' middleware functions are executed one after another, when each middleware calls next.
 */
-userSchema.pre('save', (next) => {
-  if (this.isNew || this.isModified('password')) {
 
+userSchema.pre('save', function (next) {
+  if (this.isNew || this.isModified('password')) {
+    const document = this;
+    bcrypt.hash(document.password, 10, (err, hashedPassword) => {
+      if (err) {
+        next(err);
+      } else {
+        document.password = hashedPassword;
+        next();
+      }
+    });
   } else {
     next();
   }
 });
 
+/*
+  Collections in a database are the Model name as lowercase and with appended 's' by default
+  'const User' is 'users' in Atlas.
+*/
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
