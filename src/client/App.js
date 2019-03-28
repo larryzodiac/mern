@@ -9,7 +9,7 @@
   +     ¬ Portal
   +       ¬ Signin
   +       ¬ Signup
-  +     ¬ World
+  +     ¬ Home
 */
 
 import React, { Component } from 'react';
@@ -20,7 +20,8 @@ import './App.scss';
 import { TopAppBarFixedAdjust } from '@material/react-top-app-bar';
 import { Grid } from '@material/react-layout-grid';
 // My Components
-import World from './components/World';
+import Home from './components/Home';
+import Secret from './components/Secret';
 import Signin from './components/Signin';
 import Signup from './components/Signup';
 import AppBar from './components/misc/AppBar';
@@ -44,7 +45,8 @@ class App extends Component {
         <AppBar loginSuccess={loginSuccess} />
         <TopAppBarFixedAdjust>
           <Grid>
-            <Route exact path="/" component={World} />
+            <Route exact path="/" component={Home} />
+            <Route path="/secret" render={() => <Secret />} />
             <Route path="/signin" render={() => <Signin />} />
             <Route path="/signup" render={() => <Signup />} />
           </Grid>

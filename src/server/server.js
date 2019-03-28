@@ -25,15 +25,17 @@ const server = express();
 */
 
 // URL to our DB - loaded from an env variables
-const dbRoute = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
+const dbURI = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
 // const dbName = process.env.DB;
 // let dbConnection;
 
-mongoose.connect(dbRoute, { useNewUrlParser: true }).then(
-  // client => client.db(dbName),
-  () => server.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`)),
-  err => console.log(err),
-);
+mongoose.connect(dbURI, { useNewUrlParser: true }, (err) => {
+  if (err) {
+    throw err;
+  } else {
+    server.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
+  }
+});
 
 /*
   Middleware
@@ -82,3 +84,11 @@ server.get('/api/users', (req, res) => {
 //     });
 //   });
 // });
+
+server.get('/api/home', (req, res) => {
+  res.send('Welcome!');
+});
+
+server.get('/api/secret', (req, res) => {
+  res.send('The password is potato');
+});

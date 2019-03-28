@@ -33,7 +33,12 @@ class AppBar extends Component {
           <TopAppBarRow>
 
             <TopAppBarSection align="start">
-              <TopAppBarTitle>GEE-SUZ</TopAppBarTitle>
+              <Link to="/Secret">
+                <TopAppBarTitle>Secret</TopAppBarTitle>
+              </Link>
+              <Link to="/">
+                <TopAppBarTitle>Home</TopAppBarTitle>
+              </Link>
             </TopAppBarSection>
 
             <TopAppBarSection align="end">
