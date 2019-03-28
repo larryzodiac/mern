@@ -5,15 +5,17 @@
 */
 
 :root {
-  --mdc-theme-primary: #fff;
+  --mdc-theme-primary: #fff00e;
   --mdc-theme-secondary: #feeae6;
   --mdc-theme-on-primary: #0;
-  --mdc-theme-on-secondary: #fff;
+  --mdc-theme-on-secondary: #ff0000;
 }
 
 @import '@material/react-button/index.scss';
 @import '@material/react-layout-grid/index.scss';
 @import '@material/react-material-icon/index.scss';
+@import '@material/react-text-field/index.scss';
 @import '@material/react-top-app-bar/index.scss';
+@import '@material/react-typography/index.scss';
 
 @import './style-overrides/react-top-app-bar-overrides';

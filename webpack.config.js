@@ -34,7 +34,7 @@ module.exports = {
             options: {
               includePaths: ['./node_modules'],
             },
-          }
+          },
         ],
       },
       {
