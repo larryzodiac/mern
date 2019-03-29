@@ -75,11 +75,16 @@ server.get('/api/home', (req, res) => {
   res.send('Welcome!');
 });
 
+server.get('/api/s', (req, res) => {
+  res.send(req.cookies.token);
+});
+
 server.get('/api/secret', passport.authenticate('jwt', { session: false }), (req, res) => {
   // console.log(req);
   // console.log('in');
   // console.log(req.user.profile);
-  res.send('helllllllloooooo');
+  console.log(req.headers);
+  res.send(req.cookies.token);
 });
 
 // POST route to register a user
@@ -96,7 +101,7 @@ server.post('/api/signup', (req, res) => {
 });
 
 server.post('/api/signin', (req, res, next) => {
-  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/Signin' }, (err, user, info) => {
+  passport.authenticate('local', (err, user, info) => {
     /*
       If this function gets called, authentication was successful.
       `req.user` contains the authenticated user.
