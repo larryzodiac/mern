@@ -36,6 +36,13 @@ class App extends Component {
     this.state = {
       loginSuccess: false,
     };
+    this.setLoginSuccess = this.setLoginSuccess.bind(this);
+  }
+
+  setLoginSuccess() {
+    this.setState(prevState => ({
+      loginSuccess: !prevState.loginSuccess,
+    }));
   }
 
   render() {
@@ -47,7 +54,7 @@ class App extends Component {
           <Grid>
             <Route exact path="/" component={Home} />
             <Route path="/secret" render={() => <Secret />} />
-            <Route path="/signin" render={() => <Signin />} />
+            <Route path="/signin" render={() => <Signin setLoginSuccess={this.setLoginSuccess} />} />
             <Route path="/signup" render={() => <Signup />} />
           </Grid>
         </TopAppBarFixedAdjust>

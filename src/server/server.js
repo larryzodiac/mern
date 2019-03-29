@@ -7,6 +7,7 @@
 // const { MongoClient } = require('mongodb');
 // const { ObjectID } = require('mongodb');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -47,8 +48,9 @@ server.use(express.static('dist'));
 // bodyParser, parses the request body to be a readable json format
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
+server.use(cookieParser());
 server.use(session({
-  secret: 'da843qngq85q4n8qz',
+  secret: process.env.SECRET,
   store: new MongoStore({ mongooseConnection: mongoose.connection }),
   resave: false,
   saveUninitialized: false,
@@ -73,12 +75,11 @@ server.get('/api/home', (req, res) => {
   res.send('Welcome!');
 });
 
-server.get('/api/secret', (req, res) => {
-  res.send('The password is potato');
-});
-
-server.post('/api/NEWsecret', passport.authenticate('jwt', { session: false }), (req, res) => {
-  res.send(req.user.profile);
+server.get('/api/secret', passport.authenticate('jwt', { session: false }), (req, res) => {
+  // console.log(req);
+  // console.log('in');
+  // console.log(req.user.profile);
+  res.send('helllllllloooooo');
 });
 
 // POST route to register a user
@@ -94,77 +95,29 @@ server.post('/api/signup', (req, res) => {
   });
 });
 
-// server.post('/api/authenticate', (req, res) => {
-//   const { email, password } = req.body;
-//   User.findOne({ email }, (err, user) => {
-//     if (err) {
-//       console.error(err);
-//       res.status(500)
-//         .json({
-//           error: 'Internal error please try again',
-//         });
-//     } else if (!user) {
-//       res.status(401)
-//         .json({
-//           error: 'Incorrect email or password',
-//         });
-//     } else {
-//       user.isCorrectPassword(password, (err, same) => {
-//         if (err) {
-//           res.status(500)
-//             .json({
-//               error: 'Internal error please try again'
-//             });
-//         } else if (!same) {
-//           res.status(401)
-//             .json({
-//               error: 'Incorrect email or password'
-//             });
-//         } else {
-//           // Issue token
-//           const payload = { email };
-//           const token = jwt.sign(payload, process.env.SECRET, {
-//             expiresIn: '1h'
-//           });
-//           res.cookie('token', token, { httpOnly: true }).sendStatus(200);
-//         }
-//       });
-//     }
-//   });
-// });
-
-// server.post('/api/signin', passport.authenticate('local', { failureRedirect: '/api/signin' }), (req, res) => {
-//   console.log('COOOOOOL');
-//   console.log('COOOOOOL');
-//   console.log('COOOOOOL');
-//   console.log('COOOOOOL');
-//   const { email, password } = req.body;
-//   console.log(email);
-
-//   // const token = jwt.sign(email, process.env.SECRET);
-//   const token = jwt.sign(email, process.env.SECRET, { expiresIn: '1h' });
-//   // res.json({user, token});
-//   res.cookie('token', token, { httpOnly: true }).sendStatus(200);
-//   console.log('okay');
-//   // res.redirect('/');
-//   res.send('good');
-// });
-
-// server.post('/login', (req, res) => passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }, () => {
-//   console.log('IN HERE');
-// })(req, res));
-
 server.post('/api/signin', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
+  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/Signin' }, (err, user, info) => {
     /*
       If this function gets called, authentication was successful.
       `req.user` contains the authenticated user.
     */
-    console.log('server.post -------');
-    console.log(user);
-    console.log(info);
-    console.log(err);
-    if (err) { return next(err); }
-    res.send('wow');
+    if (err || !user) {
+      return res.status(400).json({
+        message: 'Something is not right',
+        user,
+      });
+    }
+    req.login(user, { session: false }, (er) => {
+      if (er) {
+        res.send(er);
+      }
+      const token = jwt.sign(user.username, process.env.SECRET);
+      return res.cookie('token', token, { httpOnly: true }).sendStatus(200);
+    });
+    /*
+      Watch out in console for:
+      Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+      res.send()
+    */
   })(req, res, next);
 });

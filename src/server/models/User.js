@@ -1,11 +1,12 @@
-/* eslint prefer-destructuring: 0 */
-/* eslint no-useless-escape: 0 */
-/* eslint func-names: 0 */
 /*
   Evan MacHale - N00150552
   23.03.19
   User.js Model Object
 */
+
+/* eslint prefer-destructuring: 0 */
+/* eslint no-useless-escape: 0 */
+/* eslint func-names: 0 */
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -26,7 +27,9 @@ const UserSchema = new Schema({
 
 // UserSchema.methods.checkPassword = p => bcrypt.compareSync(p, this.password);
 // UserSchema.methods.hash = p => bcrypt.hashSync(p, 10);
-UserSchema.methods.isCorrectPassword = (password, callback) => {
+
+// Don't refractor, changes scope of 'this'
+UserSchema.methods.isCorrectPassword = function (password, callback) {
   bcrypt.compare(password, this.password, (err, same) => {
     if (err) {
       callback(err);

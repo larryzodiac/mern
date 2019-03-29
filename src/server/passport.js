@@ -4,6 +4,8 @@
   strategy.js
 */
 
+/* eslint consistent-return: 0 */
+
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
@@ -18,24 +20,20 @@ opts.secretOrKey = process.env.SECRET;
 // opts.issuer = 'accounts.examplesoft.com';
 // opts.audience = 'yoursite.net';
 
-passport.use(new LocalStrategy((email, password, done) => {
-  console.log('hello local strat --------');
-  console.log(email);
-  console.log(password);
-  console.log('');
-  User.findOne({ email, password }, (err, user) => {
+passport.use(new LocalStrategy((username, password, done) => {
+  User.findOne({ username }, (err, user) => {
     if (err) { return done(err); }
-    if (!user) { return done(null, false); }
-    const p = !user.verifyPassword(password);
-    console.log('p:');
-    console.log(p);
-    if (!user.verifyPassword(password)) { return done(null, false); }
+    if (!user) { return done(null, false, { message: 'Incorrect username.' }); }
+    user.isCorrectPassword(password, (er, same) => {
+      if (!same || er) { return done(null, false, { message: 'Incorrect password.' }); }
+    });
     return done(null, user);
   });
 }));
 
 passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
-  User.findOne({ id: jwtPayload.sub }, (err, user) => {
+  console.log(jwtPayload);
+  User.findOne({ username: jwtPayload }, (err, user) => {
     if (err) {
       console.log('PASSPORT ERROR');
       return done(err, false);

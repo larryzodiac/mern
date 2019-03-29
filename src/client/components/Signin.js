@@ -14,6 +14,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 // Material Design Components
 import { Cell, Row } from '@material/react-layout-grid';
@@ -30,11 +31,13 @@ class Signin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      username: '',
       password: '',
+      redirect: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.renderRedirect = this.renderRedirect.bind(this);
   }
 
   handleInputChange(event) {
@@ -47,37 +50,47 @@ class Signin extends Component {
     });
   }
 
-  // handleSubmit(event) {
-  //   event.preventDefault();
-  //   const { email } = this.state;
-  //   const { password } = this.state;
-  //   const { setLoginSuccess } = this.props;
-  //   /*
-  //     react-router Route Component Props History 🔌
-  //     Allows us to redirect by accessing the history prop!
-  //     https://medium.com/@anneeb/redirecting-in-react-4de5e517354a
-  //   */
-  //   const { history } = this.props;
-  //   /*
-  //     Make GET Request 📮
-  //   */
-  //   axios.post('api/users/signin', { email, password })
-  //     .then((response) => {
-  //       if (response.data.email === email && response.data.password === password) {
-  //         setLoginSuccess(response.data._id);
-  //         history.push('/');
-  //       } else {
-  //         console.log('incorrect data');
-  //       }
-  //     })
-  //     .catch(error => console.log(error));
-  // }
+  handleSubmit(event) {
+    event.preventDefault();
+    const { username } = this.state;
+    const { password } = this.state;
+    const { setLoginSuccess } = this.props;
+    /*
+      react-router Route Component Props History 🔌
+      Allows us to redirect by accessing the history prop!
+      https://medium.com/@anneeb/redirecting-in-react-4de5e517354a
+    */
+    /*
+      Make GET Request 📮
+    */
+    axios.post('/api/signin', { username, password })
+      .then((response) => {
+        if (response.status === 200) {
+          setLoginSuccess();
+          this.setState({
+            redirect: true,
+          });
+        } else {
+          console.log('incorrect data');
+        }
+        console.log(response);
+      })
+      .catch(error => console.log(error));
+  }
+
+  renderRedirect() {
+    const { redirect } = this.state;
+    if (redirect) {
+      return <Redirect to="/" />;
+    }
+  }
 
   render() {
-    const { email } = this.state;
+    const { username } = this.state;
     const { password } = this.state;
     return (
       <React.Fragment>
+        {this.renderRedirect()}
         <Row>
           <Cell columns={5} />
           <Cell columns={2}>
@@ -87,7 +100,7 @@ class Signin extends Component {
                   <Headline4>Welcome Back</Headline4>
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="email" label="Email" value={email} onChange={this.handleInputChange} />
+                  <Text name="username" label="Username" value={username} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
                   <Text name="password" label="Password" value={password} onChange={this.handleInputChange} />
