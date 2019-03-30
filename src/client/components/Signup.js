@@ -12,25 +12,9 @@
   +     ¬ World
 */
 
-/*
-  Evan MacHale - N00150552
-  03.03.19
-  Signup.js
-  + + + + + + + + + + +
-  + World Map 🌀
-  + Index
-  +   ¬ App
-  +     ¬ Portal
-  +       ¬ Signin
-  +       ¬ Signup      <--- You are here 🚀
-  +     ¬ World
-  +       ¬ Scene
-  +       ¬ Saves
-*/
-
 import React, { Component } from 'react';
 import axios from 'axios';
-// import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 // Material Design Components
 import { Cell, Row } from '@material/react-layout-grid';
 import Button from '@material/react-button';
@@ -85,7 +69,7 @@ class Signup extends Component {
       Make POST Request 📮
     */
     if (passwordValid) {
-      axios.post('api/users', {
+      axios.post('api/signup', {
         username,
         email,
         password,

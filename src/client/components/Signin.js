@@ -83,6 +83,7 @@ class Signin extends Component {
     if (redirect) {
       return <Redirect to="/" />;
     }
+    return <React.Fragment />;
   }
 
   render() {

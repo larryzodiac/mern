@@ -16,6 +16,7 @@ require('dotenv').config();
 
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('JWT');
 opts.secretOrKey = process.env.SECRET;
 // opts.issuer = 'accounts.examplesoft.com';
 // opts.audience = 'yoursite.net';
@@ -32,7 +33,7 @@ passport.use(new LocalStrategy((username, password, done) => {
 }));
 
 passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
-  console.log(jwtPayload);
+  console.log(`jwtpayload = ${jwtPayload}`);
   User.findOne({ username: jwtPayload }, (err, user) => {
     if (err) {
       console.log('PASSPORT ERROR');

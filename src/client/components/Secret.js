@@ -27,7 +27,12 @@ class Secret extends Component {
   }
 
   componentDidMount() {
-    axios.get('/api/secret')
+    // axios.get('/api/secret')
+    axios({
+      method: 'get',
+      url: 'api/secret',
+      withCredentials: true,
+    })
       .then(response => this.setState({ message: response.data }));
   }
 

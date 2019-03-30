@@ -37,6 +37,18 @@ class App extends Component {
       loginSuccess: false,
     };
     this.setLoginSuccess = this.setLoginSuccess.bind(this);
+    this.logout = this.logout.bind(this);
+  }
+
+  componentDidMount() {
+    axios.get('/api/token')
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState({ loginSuccess: true });
+        } else {
+          console.log('no token');
+        }
+      });
   }
 
   setLoginSuccess() {
@@ -45,11 +57,22 @@ class App extends Component {
     }));
   }
 
+  logout() {
+    axios.get('/api/logout')
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState(prevState => ({
+            loginSuccess: !prevState.loginSuccess,
+          }));
+        }
+      });
+  }
+
   render() {
     const { loginSuccess } = this.state;
     return (
       <BrowserRouter>
-        <AppBar loginSuccess={loginSuccess} />
+        <AppBar loginSuccess={loginSuccess} logout={this.logout}/>
         <TopAppBarFixedAdjust>
           <Grid>
             <Route exact path="/" component={Home} />

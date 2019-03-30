@@ -19,7 +19,7 @@ const passport = require('./passport');
 // loads environment variables from a .env file into process.env
 require('dotenv').config();
 
-mongoose.Promise = global.Promise;
+// mongoose.Promise = global.Promise;
 const server = express();
 
 /*
@@ -62,29 +62,32 @@ server.use(passport.session());
   Routes
 */
 
-server.get('/api/users', (req, res) => {
-  console.log('hello get');
-  User.find().toArray((err, result) => {
-    if (err) throw err;
-    console.log(result);
-    res.send(result);
-  });
+// server.get('/api/users', (req, res) => {
+//   console.log('hello get');
+//   User.find().toArray((err, result) => {
+//     if (err) throw err;
+//     console.log(result);
+//     res.send(result);
+//   });
+// });
+
+server.get('/api/token', (req, res) => {
+  if (req.cookies.token) {
+    res.status(200).send('Token available');
+  } else {
+    res.status(401).send('No token found');
+  }
 });
 
 server.get('/api/home', (req, res) => {
   res.send('Welcome!');
 });
 
-server.get('/api/s', (req, res) => {
-  res.send(req.cookies.token);
-});
-
-server.get('/api/secret', passport.authenticate('jwt', { session: false }), (req, res) => {
-  // console.log(req);
-  // console.log('in');
-  // console.log(req.user.profile);
-  console.log(req.headers);
-  res.send(req.cookies.token);
+server.get('/api/secret', (req, res, next) => {
+  passport.authenticate('jwt', (err) => {
+    if (err) res.send('Unauthorised');
+    res.send(req.cookies.token);
+  })(req, res, next);
 });
 
 // POST route to register a user
@@ -101,7 +104,7 @@ server.post('/api/signup', (req, res) => {
 });
 
 server.post('/api/signin', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
+  passport.authenticate('local', (err, user) => {
     /*
       If this function gets called, authentication was successful.
       `req.user` contains the authenticated user.
@@ -125,4 +128,9 @@ server.post('/api/signin', (req, res, next) => {
       res.send()
     */
   })(req, res, next);
+});
+
+server.get('/api/logout', (req, res) => {
+  req.logout();
+  res.cookie('token', '', { httpOnly: true }).sendStatus(200);
 });

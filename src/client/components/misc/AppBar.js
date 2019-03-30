@@ -13,7 +13,7 @@ import TopAppBar, {
   TopAppBarRow,
   TopAppBarSection,
   TopAppBarTitle,
-} from '@material/react-top-app-bar'
+} from '@material/react-top-app-bar';
 
 /*
   AppBar used for navigation 🚩
@@ -27,6 +27,7 @@ class AppBar extends Component {
 
   render() {
     const { loginSuccess } = this.props;
+    const { logout } = this.props;
     return (
       <div>
         <TopAppBar className="top-app-bar-custom">
@@ -43,7 +44,7 @@ class AppBar extends Component {
 
             <TopAppBarSection align="end">
               {loginSuccess ? (
-                <div>Wow logged in</div>
+                <Button onClick={logout}>logout</Button>
               ) : (
                 <div>
                   <Link to="/Signin">
@@ -65,6 +66,7 @@ class AppBar extends Component {
 
 AppBar.propTypes = {
   loginSuccess: PropTypes.bool.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 
