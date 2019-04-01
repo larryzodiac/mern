@@ -14,14 +14,14 @@
 
 import React, { Component } from 'react';
 import axios from 'axios';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.scss';
 // Material Components
 import { TopAppBarFixedAdjust } from '@material/react-top-app-bar';
 import { Grid } from '@material/react-layout-grid';
 // My Components
 import Home from './components/Home';
-import Secret from './components/Secret';
+import Profile from './components/Profile';
 import Signin from './components/Signin';
 import Signup from './components/Signup';
 import AppBar from './components/misc/AppBar';
@@ -43,12 +43,9 @@ class App extends Component {
   componentDidMount() {
     axios.get('/api/token')
       .then((response) => {
-        if (response.status === 200) {
-          this.setState({ loginSuccess: true });
-        } else {
-          console.log('no token');
-        }
-      });
+        if (response.status === 200) this.setState({ loginSuccess: true });
+      })
+      .catch(() => this.setState({ loginSuccess: false }));
   }
 
   setLoginSuccess() {
@@ -57,13 +54,12 @@ class App extends Component {
     }));
   }
 
-  logout() {
+  logout(props) {
     axios.get('/api/logout')
       .then((response) => {
         if (response.status === 200) {
-          this.setState(prevState => ({
-            loginSuccess: !prevState.loginSuccess,
-          }));
+          this.setState({ loginSuccess: false });
+          props.history.push('/');
         }
       });
   }
@@ -72,13 +68,16 @@ class App extends Component {
     const { loginSuccess } = this.state;
     return (
       <BrowserRouter>
-        <AppBar loginSuccess={loginSuccess} logout={this.logout}/>
+        <AppBar loginSuccess={loginSuccess} />
         <TopAppBarFixedAdjust>
           <Grid>
-            <Route exact path="/" component={Home} />
-            <Route path="/secret" render={() => <Secret />} />
-            <Route path="/signin" render={() => <Signin setLoginSuccess={this.setLoginSuccess} />} />
-            <Route path="/signup" render={() => <Signup />} />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/profile" render={() => <Profile />} />
+              <Route path="/signin" render={() => <Signin setLoginSuccess={this.setLoginSuccess} />} />
+              <Route path="/signup" render={() => <Signup />} />
+              <Route path="/logout" render={this.logout} />
+            </Switch>
           </Grid>
         </TopAppBarFixedAdjust>
       </BrowserRouter>

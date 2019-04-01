@@ -4,8 +4,6 @@
   server.js
 */
 
-// const { MongoClient } = require('mongodb');
-// const { ObjectID } = require('mongodb');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
@@ -19,7 +17,6 @@ const passport = require('./passport');
 // loads environment variables from a .env file into process.env
 require('dotenv').config();
 
-// mongoose.Promise = global.Promise;
 const server = express();
 
 /*
@@ -28,8 +25,6 @@ const server = express();
 
 // URL to our DB - loaded from an env variables
 const dbURI = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
-// const dbName = process.env.DB;
-// let dbConnection;
 
 mongoose.connect(dbURI, { useNewUrlParser: true }, (err) => {
   if (err) {
@@ -62,15 +57,6 @@ server.use(passport.session());
   Routes
 */
 
-// server.get('/api/users', (req, res) => {
-//   console.log('hello get');
-//   User.find().toArray((err, result) => {
-//     if (err) throw err;
-//     console.log(result);
-//     res.send(result);
-//   });
-// });
-
 server.get('/api/token', (req, res) => {
   if (req.cookies.token) {
     res.status(200).send('Token available');
@@ -83,10 +69,15 @@ server.get('/api/home', (req, res) => {
   res.send('Welcome!');
 });
 
-server.get('/api/secret', (req, res, next) => {
-  passport.authenticate('jwt', (err) => {
-    if (err) res.send('Unauthorised');
-    res.send(req.cookies.token);
+server.get('/api/profile', (req, res, next) => {
+  /*
+    For some DAFT and frustrating reason, my headers don't have an
+    authorization bearer token for passport.
+  */
+  req.headers.authorization = `Bearer ${req.cookies.token}`;
+  passport.authenticate('jwt', (err, user) => {
+    if (!user || err) res.status(401).send('Unauthorised');
+    if (user) res.send(req.cookies.token);
   })(req, res, next);
 });
 
@@ -104,14 +95,14 @@ server.post('/api/signup', (req, res) => {
 });
 
 server.post('/api/signin', (req, res, next) => {
-  passport.authenticate('local', (err, user) => {
+  passport.authenticate('local', (err, user, info) => {
     /*
       If this function gets called, authentication was successful.
       `req.user` contains the authenticated user.
     */
     if (err || !user) {
       return res.status(400).json({
-        message: 'Something is not right',
+        message: info,
         user,
       });
     }

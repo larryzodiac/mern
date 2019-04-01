@@ -119,7 +119,7 @@ class Signup extends Component {
                   <Text name="confirm" label="Confirm" value={confirm} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
-                  <Button unelevated type="submit" value="Submit">Sign up</Button>
+                  <Button type="submit" value="Submit">Sign up</Button>
                 </Cell>
               </Row>
             </form>

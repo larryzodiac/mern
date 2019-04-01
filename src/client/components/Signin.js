@@ -32,7 +32,9 @@ class Signin extends Component {
     super(props);
     this.state = {
       username: '',
+      usernameError: '',
       password: '',
+      passwordError: '',
       redirect: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -67,15 +69,30 @@ class Signin extends Component {
       .then((response) => {
         if (response.status === 200) {
           setLoginSuccess();
-          this.setState({
-            redirect: true,
-          });
-        } else {
-          console.log('incorrect data');
+          this.setState({ redirect: true });
         }
-        console.log(response);
       })
-      .catch(error => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data.message.message);
+        switch (error.response.data.message.message) {
+          case 'Missing credentials':
+            this.setState({
+              usernameError: error.response.data.message.message,
+              passwordError: error.response.data.message.message,
+            });
+            break;
+          case 'Incorrect username':
+            this.setState({ usernameError: error.response.data.message.message });
+            break;
+          case 'Incorrect password':
+            this.setState({
+              usernameError: '',
+              passwordError: error.response.data.message.message,
+            });
+            break;
+          default:
+        }
+      });
   }
 
   renderRedirect() {
@@ -88,7 +105,9 @@ class Signin extends Component {
 
   render() {
     const { username } = this.state;
+    const { usernameError } = this.state;
     const { password } = this.state;
+    const { passwordError } = this.state;
     return (
       <React.Fragment>
         {this.renderRedirect()}
@@ -101,13 +120,13 @@ class Signin extends Component {
                   <Headline4>Welcome Back</Headline4>
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="username" label="Username" value={username} onChange={this.handleInputChange} />
+                  <Text name="username" label="Username" value={username} error={usernameError} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="password" label="Password" value={password} onChange={this.handleInputChange} />
+                  <Text name="password" type="password" label="Password" value={password} error={passwordError} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
-                  <Button unelevated type="submit" value="Submit">Sign in</Button>
+                  <Button type="submit" value="Submit">Sign in</Button>
                 </Cell>
               </Row>
             </form>
@@ -119,6 +138,8 @@ class Signin extends Component {
   }
 }
 
-Signin.propTypes = {};
+Signin.propTypes = {
+  setLoginSuccess: PropTypes.func.isRequired,
+};
 
 export default Signin;

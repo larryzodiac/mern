@@ -10,10 +10,12 @@ import { Link } from 'react-router-dom';
 // Material Components
 import Button from '@material/react-button';
 import TopAppBar, {
+  TopAppBarIcon,
   TopAppBarRow,
   TopAppBarSection,
   TopAppBarTitle,
 } from '@material/react-top-app-bar';
+import MaterialIcon from '@material/react-material-icon';
 
 /*
   AppBar used for navigation 🚩
@@ -27,30 +29,38 @@ class AppBar extends Component {
 
   render() {
     const { loginSuccess } = this.props;
-    const { logout } = this.props;
     return (
       <div>
         <TopAppBar className="top-app-bar-custom">
           <TopAppBarRow>
 
             <TopAppBarSection align="start">
-              <Link to="/Secret">
-                <TopAppBarTitle>Secret</TopAppBarTitle>
-              </Link>
               <Link to="/">
-                <TopAppBarTitle>Home</TopAppBarTitle>
+                <TopAppBarTitle>MERN</TopAppBarTitle>
               </Link>
             </TopAppBarSection>
 
             <TopAppBarSection align="end">
+              <Link to="/profile">
+                <TopAppBarIcon actionItem tabIndex={0}>
+                  <MaterialIcon
+                    aria-label="account_circle"
+                    hasRipple
+                    icon="account_circle"
+                  />
+                </TopAppBarIcon>
+              </Link>
               {loginSuccess ? (
-                <Button onClick={logout}>logout</Button>
+                // <Button onClick={logout}>logout</Button>
+                <Link to="/logout">
+                  <Button>logout</Button>
+                </Link>
               ) : (
                 <div>
-                  <Link to="/Signin">
+                  <Link to="/signin">
                     <Button>Sign in</Button>
                   </Link>
-                  <Link to="/Signup">
+                  <Link to="/signup">
                     <Button outlined>Get Started</Button>
                   </Link>
                 </div>
@@ -66,7 +76,6 @@ class AppBar extends Component {
 
 AppBar.propTypes = {
   loginSuccess: PropTypes.bool.isRequired,
-  logout: PropTypes.func.isRequired,
 };
 
 
