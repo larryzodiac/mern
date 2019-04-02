@@ -8,7 +8,8 @@
 @import "colours";
 
 .top-app-bar-custom {
-  @include mdc-top-app-bar-fill-color($transparent);
+  @include mdc-top-app-bar-fill-color($white);
+  box-shadow: 0 2px 4px -1px rgba(200,200,200,.2), 0 4px 5px 0 rgba(200,200,200,.14), 0 1px 10px 0 rgba(200,200,200,.12);
   // @include mdc-top-app-bar-ink-color($blue);
   // @include mdc-top-app-bar-icon-ink-color($blue);
 }

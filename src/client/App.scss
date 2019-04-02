@@ -4,6 +4,15 @@
   App.scss
 */
 
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Serif:300,400,500,700');
+
+// fonts
+$font-family: 'IBM Plex Serif', serif;
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-heavy: 700;
+$font-height: 1.5;
+
 :root {
   --mdc-theme-primary: #000;
   --mdc-theme-secondary: #fff;
@@ -21,3 +30,38 @@
 @import '@material/react-typography/index.scss';
 
 @import './style-overrides/react-top-app-bar-overrides';
+
+.mdc-typography {
+  font-family: 'IBM Plex Serif', serif;
+}
+
+.type-light {
+  font-weight: $font-weight-light;
+}
+
+.type-regular {
+  font-weight: $font-weight-regular;
+}
+
+.type-heavy {
+  font-weight: $font-weight-heavy;
+}
+
+/*
+  Custom Styles
+*/
+
+a {
+  color: #000;
+  text-decoration: none;
+}
+
+.title {
+  margin: 0rem;
+}
+
+.top-app-bar-grid {
+  margin: 0rem !important;
+  padding-top: 0rem !important;
+  padding-bottom: 0rem !important;
+}

@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 // Material Components
+import { Cell, Grid, Row } from '@material/react-layout-grid';
 import Button from '@material/react-button';
 import TopAppBar, {
   TopAppBarIcon,
@@ -32,42 +33,50 @@ class AppBar extends Component {
     return (
       <div>
         <TopAppBar className="top-app-bar-custom">
-          <TopAppBarRow>
+          <Grid className="top-app-bar-grid">
+            <Row>
+              <Cell desktopColumns={2} tabletColumns={1} />
+              <Cell desktopColumns={8} tabletColumns={6} phoneColumns={4}>
+                <TopAppBarRow>
 
-            <TopAppBarSection align="start">
-              <Link to="/">
-                <TopAppBarTitle>MERN</TopAppBarTitle>
-              </Link>
-            </TopAppBarSection>
+                  <TopAppBarSection align="start">
+                    <Link to="/">
+                      <TopAppBarTitle>MERN</TopAppBarTitle>
+                    </Link>
+                  </TopAppBarSection>
 
-            <TopAppBarSection align="end">
-              <Link to="/profile">
-                <TopAppBarIcon actionItem tabIndex={0}>
-                  <MaterialIcon
-                    aria-label="account_circle"
-                    hasRipple
-                    icon="account_circle"
-                  />
-                </TopAppBarIcon>
-              </Link>
-              {loginSuccess ? (
-                // <Button onClick={logout}>logout</Button>
-                <Link to="/logout">
-                  <Button>logout</Button>
-                </Link>
-              ) : (
-                <div>
-                  <Link to="/signin">
-                    <Button>Sign in</Button>
-                  </Link>
-                  <Link to="/signup">
-                    <Button outlined>Get Started</Button>
-                  </Link>
-                </div>
-              )}
-            </TopAppBarSection>
+                  <TopAppBarSection align="end">
+                    <Link to="/profile">
+                      <TopAppBarIcon actionItem tabIndex={0}>
+                        <MaterialIcon
+                          aria-label="account_circle"
+                          hasRipple
+                          icon="account_circle"
+                        />
+                      </TopAppBarIcon>
+                    </Link>
+                    {loginSuccess ? (
+                      // <Button onClick={logout}>logout</Button>
+                      <Link to="/logout">
+                        <Button>logout</Button>
+                      </Link>
+                    ) : (
+                      <div>
+                        <Link to="/signin">
+                          <Button>Sign in</Button>
+                        </Link>
+                        <Link to="/signup">
+                          <Button outlined>Get Started</Button>
+                        </Link>
+                      </div>
+                    )}
+                  </TopAppBarSection>
 
-          </TopAppBarRow>
+                </TopAppBarRow>
+              </Cell>
+              <Cell desktopColumns={2} tabletColumns={1} />
+            </Row>
+          </Grid>
         </TopAppBar>
       </div>
     );
@@ -77,6 +86,5 @@ class AppBar extends Component {
 AppBar.propTypes = {
   loginSuccess: PropTypes.bool.isRequired,
 };
-
 
 export default AppBar;

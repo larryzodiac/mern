@@ -24,6 +24,7 @@ import Home from './components/Home';
 import Profile from './components/Profile';
 import Signin from './components/Signin';
 import Signup from './components/Signup';
+import ArticlePage from './components/ArticlePage';
 import AppBar from './components/misc/AppBar';
 
 /*
@@ -83,6 +84,7 @@ class App extends Component {
               <Route path="/signin" render={() => <Signin setLoginSuccess={this.setLoginSuccess} />} />
               <Route path="/signup" render={() => <Signup />} />
               <Route path="/logout" render={this.logout} />
+              <Route path="/article/:id" render={props => <ArticlePage {...props} />} />
             </Switch>
           </Grid>
         </TopAppBarFixedAdjust>

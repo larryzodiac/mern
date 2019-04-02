@@ -11,9 +11,11 @@ const cookieParser = require('cookie-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const path = require('path');
 const MongoStore = require('connect-mongo')(session);
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
+const Article = require('./models/Article');
 const passport = require('./passport');
 
 // loads environment variables from a .env file into process.env
@@ -41,6 +43,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true }, (err) => {
 */
 
 // serve files from the dist directory
+server.use(express.static(path.join(__dirname, '/public')));
 server.use(express.static('dist'));
 // bodyParser, parses the request body to be a readable json format
 server.use(bodyParser.urlencoded({ extended: false }));
@@ -68,7 +71,22 @@ server.get('/api/token', (req, res) => {
 });
 
 server.get('/api/home', (req, res) => {
-  res.send('Welcome!');
+  Article.find({}, (err, data) => {
+    if (err) throw err;
+    res.send(data);
+  });
+});
+
+server.get('/api/article/:id', (req, res) => {
+  Article.findOne({ _id: req.params.id }, (err, data) => {
+    /*
+      Error handling if the id param is wrong
+      Error -> MIME type ('text/html') is not supported
+      Need to ask Andrew...
+    */
+    if (err) res.status(404).send('Article not found');
+    res.send(data);
+  });
 });
 
 server.get('/api/profile', (req, res, next) => {
