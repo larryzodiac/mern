@@ -4,6 +4,8 @@
   server.js
 */
 
+/* eslint no-useless-escape: 0 */
+
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
@@ -77,20 +79,38 @@ server.get('/api/profile', (req, res, next) => {
   req.headers.authorization = `Bearer ${req.cookies.token}`;
   passport.authenticate('jwt', (err, user) => {
     if (!user || err) res.status(401).send('Unauthorised');
-    if (user) res.send(req.cookies.token);
+    if (user) res.send(user);
   })(req, res, next);
 });
 
-// POST route to register a user
 server.post('/api/signup', (req, res) => {
-  const { username, email, password } = req.body;
+  const {
+    username,
+    email,
+    password,
+    confirm,
+  } = req.body;
+  if (username === '' || email === '' || password === '' || confirm === '') {
+    res.status(500).send('Missing credentials');
+  }
+  const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if (!regex.test(email)) {
+    res.status(500).send('Invalid email');
+  }
+  if (password !== confirm || password === '' || confirm === '') {
+    res.status(500).send('Passwords do not match');
+  }
   const user = new User({ username, email, password });
+  /*
+    Watch out in console for:
+    Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    res.send()
+  */
   user.save((err) => {
     if (err) {
       res.status(500).send('Error registering new user please try again.');
-    } else {
-      res.status(200).send('Welcome to the club!');
     }
+    res.status(200).send('Successful sign up');
   });
 });
 

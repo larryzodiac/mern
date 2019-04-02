@@ -2,20 +2,12 @@
   Evan MacHale - N00150552
   24.03.19
   Signin.js
-  + + + + + + + + + + +
-  + World Map 🌀 (Pages)
-  + Index
-  +   ¬ App
-  +     ¬ Portal
-  +       ¬ Signin      <--- You are here 🚀
-  +       ¬ Signup
-  +     ¬ World
 */
 
 import React, { Component } from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-import axios from 'axios';
 // Material Design Components
 import { Cell, Row } from '@material/react-layout-grid';
 import Button from '@material/react-button';
@@ -44,26 +36,16 @@ class Signin extends Component {
 
   handleInputChange(event) {
     const { target } = event;
-    const { value } = target;
-    const { name } = target;
-
-    this.setState({
-      [name]: value,
-    });
+    const { value, name } = target;
+    this.setState({ [name]: value });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    const { username } = this.state;
-    const { password } = this.state;
+    const { username, password } = this.state;
     const { setLoginSuccess } = this.props;
     /*
-      react-router Route Component Props History 🔌
-      Allows us to redirect by accessing the history prop!
-      https://medium.com/@anneeb/redirecting-in-react-4de5e517354a
-    */
-    /*
-      Make GET Request 📮
+      Make POST Request 📮
     */
     axios.post('/api/signin', { username, password })
       .then((response) => {
@@ -73,7 +55,9 @@ class Signin extends Component {
         }
       })
       .catch((error) => {
-        console.log(error.response.data.message.message);
+        /*
+          Validate 🔒
+        */
         switch (error.response.data.message.message) {
           case 'Missing credentials':
             this.setState({
@@ -82,7 +66,10 @@ class Signin extends Component {
             });
             break;
           case 'Incorrect username':
-            this.setState({ usernameError: error.response.data.message.message });
+            this.setState({
+              usernameError: error.response.data.message.message,
+              passwordError: '',
+            });
             break;
           case 'Incorrect password':
             this.setState({
@@ -104,10 +91,12 @@ class Signin extends Component {
   }
 
   render() {
-    const { username } = this.state;
-    const { usernameError } = this.state;
-    const { password } = this.state;
-    const { passwordError } = this.state;
+    const {
+      username,
+      usernameError,
+      password,
+      passwordError,
+    } = this.state;
     return (
       <React.Fragment>
         {this.renderRedirect()}

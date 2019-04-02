@@ -1,7 +1,7 @@
 /*
   Evan MacHale - N00150552
   26.03.19
-  Text.js
+  Text.js - Miscellaneous modular components folder🔨
 */
 
 import React, { Component } from 'react';
@@ -31,9 +31,7 @@ class Text extends Component {
 
   componentDidUpdate(prevProps) {
     const { error } = this.props;
-    if (error !== prevProps.error) {
-      this.changeError();
-    }
+    if (error !== prevProps.error) this.changeError();
   }
 
   changeError() {
@@ -47,8 +45,7 @@ class Text extends Component {
 
   renderHelperText() {
     const { isValid } = this.state;
-    const { error } = this.props;
-    const { name } = this.props;
+    const { error, name } = this.props;
     if (isValid) {
       if (name === 'confirm') {
         return (<HelperText>{`Please ${name}`}</HelperText>);
@@ -68,11 +65,13 @@ class Text extends Component {
 
   render() {
     const { isValid } = this.state;
-    const { name } = this.props;
-    const { label } = this.props;
-    const { value } = this.props;
-    const { onChange } = this.props;
-    const { type } = this.props;
+    const {
+      name,
+      label,
+      value,
+      onChange,
+      type,
+    } = this.props;
     return (
       <React.Fragment>
         <TextField
@@ -93,68 +92,17 @@ class Text extends Component {
   }
 }
 
-// <TextField
-//   label={label}
-//   outlined
-//   helperText={(
-//     <HelperText
-//       isValid
-//       validation
-//       persistent
-//     >
-//       {error}
-//     </HelperText>
-//   )}
-// >
-
-// const Text = (props) => {
-//   const { name } = props;
-//   const { label } = props;
-//   const { value } = props;
-//   const { onChange } = props;
-//   const { error } = props;
-//   return (
-//     <React.Fragment>
-//       <TextField
-//         label={label}
-//         outlined
-//         helperText={(
-//           <HelperText
-//             isValid
-//             validation
-//             persistent
-//           >
-//             {error}
-//           </HelperText>
-//         )}
-//       >
-//         <Input
-//           isValid={false}
-//           name={name}
-//           value={value}
-//           onChange={onChange}
-//         />
-//       </TextField>
-//     </React.Fragment>
-//   );
-// };
-
 Text.propTypes = {
-  name: PropTypes.string,
-  label: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-  error: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
   type: PropTypes.string,
 };
 
 // Specifies the default values for props:
 Text.defaultProps = {
-  name: '',
-  label: '',
-  value: '',
-  onChange: null,
-  error: '',
   type: 'text',
 };
 

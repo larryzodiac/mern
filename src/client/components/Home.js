@@ -1,21 +1,14 @@
 /*
   Evan MacHale - N00150552
   24.03.19
-  World.js
-  + + + + + + + + + + +
-  + World Map 🌀 (Pages)
-  + Index
-  +   ¬ App
-  +     ¬ Signin
-  +     ¬ Signup
-  +     ¬ Home         <--- You are here 🚀
+  Home.js
 */
 
 import React, { Component } from 'react';
 import axios from 'axios';
 
 /*
-  World acts as a homepage. Browse or sign in 🏠
+  Home acts as a dashboard. Browse content or sign in 🏠
 */
 
 class Home extends Component {

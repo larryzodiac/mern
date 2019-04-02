@@ -41,6 +41,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // Who goes there? Where is your token? 👮
     axios.get('/api/token')
       .then((response) => {
         if (response.status === 200) this.setState({ loginSuccess: true });
@@ -55,6 +56,11 @@ class App extends Component {
   }
 
   logout(props) {
+    /*
+      react-router Route Component Props History 🔌
+      Allows us to redirect by accessing the history prop!
+      https://medium.com/@anneeb/redirecting-in-react-4de5e517354a
+    */
     axios.get('/api/logout')
       .then((response) => {
         if (response.status === 200) {

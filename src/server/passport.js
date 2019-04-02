@@ -1,7 +1,7 @@
 /*
   Evan MacHale - N00150552
   26.03.19
-  strategy.js
+  passport.js
 */
 
 /* eslint consistent-return: 0 */

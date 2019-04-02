@@ -2,14 +2,6 @@
   Evan MacHale - N00150552
   24.03.19
   Signup.js
-  + + + + + + + + + + +
-  + World Map 🌀 (Pages)
-  + Index
-  +   ¬ App
-  +     ¬ Portal
-  +       ¬ Signin
-  +       ¬ Signup      <--- You are here 🚀
-  +     ¬ World
 */
 
 import React, { Component } from 'react';
@@ -31,9 +23,13 @@ class Signup extends Component {
     super(props);
     this.state = {
       username: '',
+      usernameError: '',
       email: '',
+      emailError: '',
       password: '',
+      passwordError: '',
       confirm: '',
+      confirmError: '',
       redirect: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -42,59 +38,81 @@ class Signup extends Component {
 
   handleInputChange(event) {
     const { target } = event;
-    const { value } = target;
-    const { name } = target;
-
-    this.setState({
-      [name]: value,
-    });
+    const { value, name } = target;
+    this.setState({ [name]: value });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    const { username } = this.state;
-    const { email } = this.state;
-    const { password } = this.state;
-    const { confirm } = this.state;
-    /*
-      Validate Password 🔒
-    */
-    let passwordValid;
-    if (password === confirm && password !== '' && confirm !== '') {
-      passwordValid = true;
-    } else {
-      passwordValid = false;
-    }
+    const {
+      username,
+      email,
+      password,
+      confirm,
+    } = this.state;
     /*
       Make POST Request 📮
     */
-    if (passwordValid) {
-      axios.post('api/signup', {
-        username,
-        email,
-        password,
+    axios.post('api/signup', {
+      username,
+      email,
+      password,
+      confirm,
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState({ redirect: true });
+        }
       })
-        .then((response) => {
-          if (response.status === 200) {
-            this.setState(prevState => ({
-              redirect: !prevState.redirect,
-            }));
-          } else {
-            console.log('incorrect data');
-          }
-        })
-        .catch(error => console.log(error));
-    } else {
-      console.log('incorrect data');
-    }
+      .catch((error) => {
+        /*
+          Validate 🔒
+        */
+        console.log(error.response)
+        switch (error.response.data) {
+          case 'Missing credentials':
+            this.setState({
+              usernameError: error.response.data,
+              emailError: error.response.data,
+              passwordError: error.response.data,
+              confirmError: error.response.data,
+            });
+            break;
+          case 'Invalid email':
+            this.setState({
+              usernameError: '',
+              emailError: error.response.data,
+              passwordError: '',
+              confirmError: '',
+            });
+            break;
+          case 'Passwords do not match':
+            this.setState({
+              usernameError: '',
+              emailError: '',
+              passwordError: error.response.data,
+              confirmError: error.response.data,
+            });
+            break;
+          default:
+        }
+      });
   }
 
   render() {
-    const { username } = this.state;
-    const { email } = this.state;
-    const { password } = this.state;
-    const { confirm } = this.state;
-    const { redirect } = this.state;
+    const {
+      username,
+      email,
+      password,
+      confirm,
+      redirect,
+    } = this.state;
+    const {
+      usernameError,
+      emailError,
+      passwordError,
+      confirmError,
+    } = this.state;
     return (
       <React.Fragment>
         { redirect && <Redirect to="/Signin" /> }
@@ -107,16 +125,16 @@ class Signup extends Component {
                   <Headline4>Create an Account</Headline4>
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="username" label="Username" value={username} onChange={this.handleInputChange} />
+                  <Text name="username" label="Username" value={username} error={usernameError} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="email" label="Email" value={email} onChange={this.handleInputChange} />
+                  <Text name="email" label="Email" value={email} error={emailError} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="password" label="Password" value={password} onChange={this.handleInputChange} />
+                  <Text name="password" type="password" label="Password" value={password} error={passwordError} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="confirm" label="Confirm" value={confirm} onChange={this.handleInputChange} />
+                  <Text name="confirm" type="password" label="Confirm" value={confirm} error={confirmError} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
                   <Button type="submit" value="Submit">Sign up</Button>
