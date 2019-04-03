@@ -84,8 +84,12 @@ server.get('/api/article/:id', (req, res) => {
       Error -> MIME type ('text/html') is not supported
       Need to ask Andrew...
     */
-    if (err) res.status(404).send('Article not found');
-    res.send(data);
+    if (err) throw err;
+    if (data) {
+      res.send(data);
+    } else {
+      res.status(404).send('Article not found');
+    }
   });
 });
 
@@ -110,13 +114,16 @@ server.post('/api/signup', (req, res) => {
   } = req.body;
   if (username === '' || email === '' || password === '' || confirm === '') {
     res.status(500).send('Missing credentials');
+    return;
   }
   const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   if (!regex.test(email)) {
     res.status(500).send('Invalid email');
+    return;
   }
   if (password !== confirm || password === '' || confirm === '') {
     res.status(500).send('Passwords do not match');
+    return;
   }
   const user = new User({ username, email, password });
   /*
@@ -127,6 +134,7 @@ server.post('/api/signup', (req, res) => {
   user.save((err) => {
     if (err) {
       res.status(500).send('Error registering new user please try again.');
+      return;
     }
     res.status(200).send('Successful sign up');
   });
@@ -149,7 +157,8 @@ server.post('/api/signin', (req, res, next) => {
         res.send(er);
       }
       const token = jwt.sign(user.username, process.env.SECRET);
-      return res.cookie('token', token, { httpOnly: true }).sendStatus(200);
+      res.cookie('token', token, { httpOnly: true });
+      res.send(user._id);
     });
     /*
       Watch out in console for:

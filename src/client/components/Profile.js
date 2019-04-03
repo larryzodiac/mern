@@ -7,6 +7,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+// Material Components
+import { Cell, Row } from '@material/react-layout-grid';
+import { Headline4, Body2 } from '@material/react-typography';
 
 /*
   Profile is only available to authenticated users 🔒
@@ -21,6 +24,8 @@ class Profile extends Component {
     };
   }
 
+  // static contextType = ContextId;
+
   componentDidMount() {
     axios.get('/api/profile')
       .then((response) => {
@@ -34,10 +39,24 @@ class Profile extends Component {
     return (
       <React.Fragment>
         { redirect && <Redirect to="/Signin" /> }
-        <div>
-          <h1>{ `${profile.username}'s Profile` }</h1>
-          <p>{ `Email: ${profile.email}` }</p>
-        </div>
+        <Row>
+          <Cell desktopColumns={4} tabletColumns={1} />
+          <Cell desktopColumns={4} tabletColumns={6} phoneColumns={4}>
+            <Row>
+              <Cell desktopColumns={12} tabletColumns={8}>
+                <Headline4>{ `${profile.username}'s Articles` }</Headline4>
+                <Body2>{  }</Body2>
+              </Cell>
+            </Row>
+            <Row>
+              <Cell desktopColumns={10} tabletColumns={8}>
+                {/* Rows in here per articles */}
+                Lorem ipsum dolosit amet, consectetur adipiscing elit. Phasellus fringilla vulputate ipsum sit amet facilisis. Morbi dui ex, euismod sed egestas ac, maximus eget sem. Donec molestie auctor tellus eu egestas. Vivamus malesuada justo nec nisi semper condimentum. Nam sit amet nulla sit amet augue sodales gravida.
+              </Cell>
+            </Row>
+          </Cell>
+          <Cell desktopColumns={4} tabletColumns={1} />
+        </Row>
       </React.Fragment>
     );
   }

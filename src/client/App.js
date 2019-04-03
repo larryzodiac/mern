@@ -25,11 +25,14 @@ import Profile from './components/Profile';
 import Signin from './components/Signin';
 import Signup from './components/Signup';
 import ArticlePage from './components/ArticlePage';
+import New from './components/New';
 import AppBar from './components/misc/AppBar';
 
 /*
   App functions as the hub for all component traffic 🚂
 */
+
+let ContextId;
 
 class App extends Component {
   constructor(props) {
@@ -50,10 +53,11 @@ class App extends Component {
       .catch(() => this.setState({ loginSuccess: false }));
   }
 
-  setLoginSuccess() {
+  setLoginSuccess(id) {
     this.setState(prevState => ({
       loginSuccess: !prevState.loginSuccess,
     }));
+    ContextId = React.createContext(id);
   }
 
   logout(props) {
@@ -78,14 +82,17 @@ class App extends Component {
         <AppBar loginSuccess={loginSuccess} />
         <TopAppBarFixedAdjust>
           <Grid>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/profile" render={() => <Profile />} />
-              <Route path="/signin" render={() => <Signin setLoginSuccess={this.setLoginSuccess} />} />
-              <Route path="/signup" render={() => <Signup />} />
-              <Route path="/logout" render={this.logout} />
-              <Route path="/article/:id" render={props => <ArticlePage {...props} />} />
-            </Switch>
+            <ContextId.Provider>
+              <Switch>
+                <Route exact path="/" component={Home} />
+                <Route path="/profile" render={() => <Profile />} />
+                <Route path="/signin" render={() => <Signin setLoginSuccess={this.setLoginSuccess} />} />
+                <Route path="/signup" render={() => <Signup />} />
+                <Route path="/logout" render={this.logout} />
+                <Route path="/article/:id" render={props => <ArticlePage {...props} />} />
+                <Route path="/new" render={() => <New />} />
+              </Switch>
+            </ContextId.Provider>
           </Grid>
         </TopAppBarFixedAdjust>
       </BrowserRouter>

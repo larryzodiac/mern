@@ -46,29 +46,55 @@ class AppBar extends Component {
                   </TopAppBarSection>
 
                   <TopAppBarSection align="end">
-                    <Link to="/profile">
-                      <TopAppBarIcon actionItem tabIndex={0}>
-                        <MaterialIcon
-                          aria-label="account_circle"
-                          hasRipple
-                          icon="account_circle"
-                        />
-                      </TopAppBarIcon>
-                    </Link>
                     {loginSuccess ? (
-                      // <Button onClick={logout}>logout</Button>
-                      <Link to="/logout">
-                        <Button>logout</Button>
-                      </Link>
-                    ) : (
+                      // Need to stop DRY
                       <div>
+                        <Link to="/new">
+                          <TopAppBarIcon actionItem tabIndex={0}>
+                            <MaterialIcon
+                              aria-label="add"
+                              hasRipple
+                              icon="add"
+                            />
+                          </TopAppBarIcon>
+                        </Link>
+                        <Link to="/profile">
+                          <TopAppBarIcon actionItem tabIndex={0}>
+                            <MaterialIcon
+                              aria-label="account_circle"
+                              hasRipple
+                              icon="account_circle"
+                            />
+                          </TopAppBarIcon>
+                        </Link>
+                        <Link to="/logout">
+                          <TopAppBarIcon actionItem tabIndex={0}>
+                            <MaterialIcon
+                              aria-label="exit_to_app"
+                              hasRipple
+                              icon="exit_to_app"
+                            />
+                          </TopAppBarIcon>
+                        </Link>
+                      </div>
+                    ) : (
+                      <React.Fragment>
+                        <Link to="/profile">
+                          <TopAppBarIcon actionItem tabIndex={0}>
+                            <MaterialIcon
+                              aria-label="account_circle"
+                              hasRipple
+                              icon="account_circle"
+                            />
+                          </TopAppBarIcon>
+                        </Link>
                         <Link to="/signin">
                           <Button>Sign in</Button>
                         </Link>
                         <Link to="/signup">
                           <Button outlined>Get Started</Button>
                         </Link>
-                      </div>
+                      </React.Fragment>
                     )}
                   </TopAppBarSection>
 

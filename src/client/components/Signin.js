@@ -50,7 +50,8 @@ class Signin extends Component {
     axios.post('/api/signin', { username, password })
       .then((response) => {
         if (response.status === 200) {
-          setLoginSuccess();
+          // Maybe pass user_id here for context?
+          setLoginSuccess(response.data);
           this.setState({ redirect: true });
         }
       })
