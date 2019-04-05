@@ -9,7 +9,11 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 // Material Components
 import { Cell, Row } from '@material/react-layout-grid';
-import { Headline4, Body2 } from '@material/react-typography';
+import { Headline4 } from '@material/react-typography';
+// My Components
+import Article from './misc/Article';
+// Context
+import { MyContext } from '../Provider';
 
 /*
   Profile is only available to authenticated users 🔒
@@ -20,22 +24,35 @@ class Profile extends Component {
     super();
     this.state = {
       profile: 'Loading...',
+      articles: [],
       redirect: false,
     };
   }
 
-  // static contextType = ContextId;
-
   componentDidMount() {
     axios.get('/api/profile')
       .then((response) => {
-        if (response.status === 200) this.setState({ profile: response.data });
+        if (response.status === 200) {
+          this.setState({
+            profile: response.data.user,
+            articles: response.data.articles,
+          });
+        }
       })
       .catch(() => this.setState({ redirect: true }));
   }
 
   render() {
-    const { profile, redirect } = this.state;
+    const { profile, articles, redirect } = this.state;
+    const articlesList = articles.map(a => (
+      <Article
+        key={a._id}
+        id={a._id}
+        userId={a.user_id}
+        title={a.title}
+        blurb={a.blurb}
+      />
+    ));
     return (
       <React.Fragment>
         { redirect && <Redirect to="/Signin" /> }
@@ -45,13 +62,18 @@ class Profile extends Component {
             <Row>
               <Cell desktopColumns={12} tabletColumns={8}>
                 <Headline4>{ `${profile.username}'s Articles` }</Headline4>
-                <Body2>{  }</Body2>
+              </Cell>
+            </Row>
+            <Row>
+              <Cell desktopColumns={10} tabletColumns={8}>
+                <hr />
+                <br />
               </Cell>
             </Row>
             <Row>
               <Cell desktopColumns={10} tabletColumns={8}>
                 {/* Rows in here per articles */}
-                Lorem ipsum dolosit amet, consectetur adipiscing elit. Phasellus fringilla vulputate ipsum sit amet facilisis. Morbi dui ex, euismod sed egestas ac, maximus eget sem. Donec molestie auctor tellus eu egestas. Vivamus malesuada justo nec nisi semper condimentum. Nam sit amet nulla sit amet augue sodales gravida.
+                { articlesList }
               </Cell>
             </Row>
           </Cell>

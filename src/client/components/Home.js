@@ -35,6 +35,7 @@ class Home extends Component {
       <Article
         key={a._id}
         id={a._id}
+        userId={a.user_id}
         title={a.title}
         blurb={a.blurb}
       />

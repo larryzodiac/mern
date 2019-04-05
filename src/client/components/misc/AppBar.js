@@ -47,7 +47,7 @@ class AppBar extends Component {
 
                   <TopAppBarSection align="end">
                     {loginSuccess ? (
-                      // Need to stop DRY
+                      // Need to fix DRY
                       <div>
                         <Link to="/new">
                           <TopAppBarIcon actionItem tabIndex={0}>

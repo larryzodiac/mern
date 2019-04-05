@@ -62,9 +62,20 @@ server.use(passport.session());
   Routes
 */
 
-server.get('/api/token', (req, res) => {
+// server.get('/api/token', (req, res) => {
+//   if (req.cookies.token) {
+//     res.status(200).send('Token available');
+//   } else {
+//     res.status(401).send('No token found');
+//   }
+// });
+
+server.get('/api/token', (req, res, next) => {
   if (req.cookies.token) {
-    res.status(200).send('Token available');
+    req.headers.authorization = `Bearer ${req.cookies.token}`;
+    passport.authenticate('jwt', (err, user) => {
+      if (user) res.send(user._id);
+    })(req, res, next);
   } else {
     res.status(401).send('No token found');
   }
@@ -93,6 +104,10 @@ server.get('/api/article/:id', (req, res) => {
   });
 });
 
+server.delete('/api/article/:id', (req, res) => {
+  console.log(req.params.id);
+});
+
 server.get('/api/profile', (req, res, next) => {
   /*
     For some DAFT and frustrating reason, my headers don't have an
@@ -101,7 +116,12 @@ server.get('/api/profile', (req, res, next) => {
   req.headers.authorization = `Bearer ${req.cookies.token}`;
   passport.authenticate('jwt', (err, user) => {
     if (!user || err) res.status(401).send('Unauthorised');
-    if (user) res.send(user);
+    if (user) {
+      Article.find({ user_id: user._id }, (er, articles) => {
+        if (err) res.send(user);
+        res.send({ user, articles });
+      });
+    }
   })(req, res, next);
 });
 
@@ -147,14 +167,16 @@ server.post('/api/signin', (req, res, next) => {
       `req.user` contains the authenticated user.
     */
     if (err || !user) {
-      return res.status(400).json({
+      res.status(400).json({
         message: info,
         user,
       });
+      return;
     }
     req.login(user, { session: false }, (er) => {
       if (er) {
         res.send(er);
+        return;
       }
       const token = jwt.sign(user.username, process.env.SECRET);
       res.cookie('token', token, { httpOnly: true });

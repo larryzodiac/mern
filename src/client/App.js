@@ -20,6 +20,7 @@ import './App.scss';
 import { TopAppBarFixedAdjust } from '@material/react-top-app-bar';
 import { Grid } from '@material/react-layout-grid';
 // My Components
+import Provider from './Provider';
 import Home from './components/Home';
 import Profile from './components/Profile';
 import Signin from './components/Signin';
@@ -29,16 +30,23 @@ import New from './components/New';
 import AppBar from './components/misc/AppBar';
 
 /*
-  App functions as the hub for all component traffic 🚂
+  Context
 */
 
-let ContextId;
+export const ContextId = React.createContext('hello');
+export const ThemeContext = React.createContext('hello');
+// export const Context = ContextId;
+
+/*
+  App functions as the hub for all component traffic 🚂
+*/
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loginSuccess: false,
+      id: '',
     };
     this.setLoginSuccess = this.setLoginSuccess.bind(this);
     this.logout = this.logout.bind(this);
@@ -48,7 +56,12 @@ class App extends Component {
     // Who goes there? Where is your token? 👮
     axios.get('/api/token')
       .then((response) => {
-        if (response.status === 200) this.setState({ loginSuccess: true });
+        if (response.status === 200) {
+          this.setState({
+            loginSuccess: true,
+            id: response.data,
+          });
+        }
       })
       .catch(() => this.setState({ loginSuccess: false }));
   }
@@ -56,8 +69,8 @@ class App extends Component {
   setLoginSuccess(id) {
     this.setState(prevState => ({
       loginSuccess: !prevState.loginSuccess,
+      id,
     }));
-    ContextId = React.createContext(id);
   }
 
   logout(props) {
@@ -76,26 +89,26 @@ class App extends Component {
   }
 
   render() {
-    const { loginSuccess } = this.state;
+    const { loginSuccess, id } = this.state;
     return (
-      <BrowserRouter>
-        <AppBar loginSuccess={loginSuccess} />
-        <TopAppBarFixedAdjust>
-          <Grid>
-            <ContextId.Provider>
+      <Provider globalUserId={id}>
+        <BrowserRouter>
+          <AppBar loginSuccess={loginSuccess} />
+          <TopAppBarFixedAdjust>
+            <Grid>
               <Switch>
                 <Route exact path="/" component={Home} />
-                <Route path="/profile" render={() => <Profile />} />
+                <Route path="/profile" render={props => <Profile {...props} />} />
                 <Route path="/signin" render={() => <Signin setLoginSuccess={this.setLoginSuccess} />} />
                 <Route path="/signup" render={() => <Signup />} />
                 <Route path="/logout" render={this.logout} />
                 <Route path="/article/:id" render={props => <ArticlePage {...props} />} />
                 <Route path="/new" render={() => <New />} />
               </Switch>
-            </ContextId.Provider>
-          </Grid>
-        </TopAppBarFixedAdjust>
-      </BrowserRouter>
+            </Grid>
+          </TopAppBarFixedAdjust>
+        </BrowserRouter>
+      </Provider>
     );
   }
 }
