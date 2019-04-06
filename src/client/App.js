@@ -97,7 +97,7 @@ class App extends Component {
           <TopAppBarFixedAdjust>
             <Grid>
               <Switch>
-                <Route exact path="/" component={Home} />
+                <Route exact path="/" render={props => <Home {...props} />} />
                 <Route path="/profile" render={props => <Profile {...props} />} />
                 <Route path="/signin" render={() => <Signin setLoginSuccess={this.setLoginSuccess} />} />
                 <Route path="/signup" render={() => <Signup />} />

@@ -22,10 +22,14 @@ const Provider = (props) => {
     <MyContext.Provider
       value={{
         globalUserId,
-        handleArticleDelete: (articleId) => {
+        handleArticleDelete: (articleId, getArticles) => {
           axios
             .delete(`api/article/${articleId}`)
-            .then(response => console.log(response))
+            .then((response) => {
+              if (response.status === 200) {
+                getArticles();
+              }
+            })
             .catch(error => console.log(error));
         },
       }}

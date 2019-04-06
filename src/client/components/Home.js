@@ -22,9 +22,14 @@ class Home extends Component {
     this.state = {
       articles: [],
     };
+    this.getArticles = this.getArticles.bind(this);
   }
 
   componentDidMount() {
+    this.getArticles();
+  }
+
+  getArticles() {
     axios.get('/api/home')
       .then(response => this.setState({ articles: response.data }));
   }
@@ -38,6 +43,7 @@ class Home extends Component {
         userId={a.user_id}
         title={a.title}
         blurb={a.blurb}
+        getArticles={this.getArticles}
       />
     ));
     return (

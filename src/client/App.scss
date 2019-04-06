@@ -31,8 +31,10 @@ $font-height: 1.5;
 @import '@material/react-typography/index.scss';
 
 @import './style-overrides/react-top-app-bar-overrides';
+@import './style-overrides/react-text-field-overrides.scss';
 
-.mdc-typography {
+.mdc-typography,
+.mdc-text-field__input {
   font-family: 'IBM Plex Serif', serif;
 }
 
@@ -65,4 +67,9 @@ a {
   margin: 0rem !important;
   padding-top: 0rem !important;
   padding-bottom: 0rem !important;
+}
+
+.error {
+  font-family: sans-serif;
+  color: red;
 }

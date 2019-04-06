@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 // Material Components
 import { Cell, Row } from '@material/react-layout-grid';
 import { Body2, Headline4, Overline } from '@material/react-typography';
@@ -26,51 +26,45 @@ class Article extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      redirect: false,
+    };
   }
 
   render() {
+    const { redirect } = this.state;
     const {
       id,
       userId,
       title,
       blurb,
+      getArticles,
     } = this.props;
     const { globalUserId } = this.context;
     let articleOptions;
-    // console.log(userId);
-    // console.log(globalUserId);
     if (globalUserId === userId) {
       articleOptions = (
         <MyContext.Consumer>
-          {(context) => {
-            return (
-              <React.Fragment>
-                <Cell desktopColumns={1} tabletColumns={1} phoneColumns={1}>
-                  <IconButton>
-                    <MaterialIcon icon="create" />
-                  </IconButton>
-                </Cell>
-                <Cell desktopColumns={1} tabletColumns={1} phoneColumns={1}>
-                  {/* This took FOREVORRRRRRR.. make sure to comment for Andrew */}
-                  <IconButton onClick={() => context.handleArticleDelete(id)}>
-                    <MaterialIcon icon="delete" />
-                  </IconButton>
-                </Cell>
-              </React.Fragment>
-            );
-          }}
+          {context => (
+            <React.Fragment>
+              <Cell desktopColumns={1} tabletColumns={1} phoneColumns={1}>
+                <IconButton>
+                  <MaterialIcon icon="create" />
+                </IconButton>
+              </Cell>
+              <Cell desktopColumns={1} tabletColumns={1} phoneColumns={1}>
+                {/* This took FOREVORRRRRRR.. make sure to comment for Andrew */}
+                <IconButton onClick={() => context.handleArticleDelete(id, getArticles)}>
+                  <MaterialIcon icon="delete" />
+                </IconButton>
+              </Cell>
+            </React.Fragment>
+          )}
         </MyContext.Consumer>
       );
     } else {
       articleOptions = <React.Fragment />;
     }
-
-    // <MyContext.Consumer>
-    //   {(context) => {
-    //     return <p>id:{context.state.id}</p>
-    //   }}
-    // </MyContext.Consumer>
     return (
       <Row>
         <Cell desktopColumns={12} tabletColumns={8}>
@@ -96,6 +90,7 @@ Article.propTypes = {
   userId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   blurb: PropTypes.string.isRequired,
+  pathname: PropTypes.string.isRequired,
 };
 
 export default Article;

@@ -33,7 +33,6 @@ passport.use(new LocalStrategy((username, password, done) => {
 }));
 
 passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
-  console.log(`jwtpayload = ${jwtPayload}`);
   User.findOne({ username: jwtPayload }, (err, user) => {
     if (err) {
       console.log('PASSPORT ERROR');

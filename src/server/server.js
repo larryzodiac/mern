@@ -6,6 +6,7 @@
 
 /* eslint no-useless-escape: 0 */
 
+const { ObjectID } = require('mongodb');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
@@ -104,8 +105,38 @@ server.get('/api/article/:id', (req, res) => {
   });
 });
 
+// server.delete('/api/article/:id', (req, res) => {
+//   // console.log(req.params.id);
+//   // console.log('IN THE SEERVER');
+//   res.status(200).send('Successfully deleted');
+// });
+
 server.delete('/api/article/:id', (req, res) => {
-  console.log(req.params.id);
+  Article.deleteOne({ _id: new ObjectID(req.params.id) }, (err) => {
+    if (err) throw err;
+    res.status(200).send('Successfully deleted');
+  });
+});
+
+server.post('/api/article/:id', (req, res) => {
+  const { title, blurb, content } = req.body;
+  if (title === '' || title === 'Title' || blurb === '' || blurb === 'Give the reader a summary..' || content === '' || content === 'Tell your story..') {
+    res.status(500).send("You've left something out.");
+    return;
+  }
+  const article = new Article({
+    title,
+    blurb,
+    content,
+    user_id: req.params.id,
+  });
+  article.save((err) => {
+    if (err) {
+      res.status(500).send('Error publishing story');
+      return;
+    }
+    res.status(200).send('Successfully published');
+  });
 });
 
 server.get('/api/profile', (req, res, next) => {

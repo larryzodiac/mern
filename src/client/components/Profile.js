@@ -12,8 +12,6 @@ import { Cell, Row } from '@material/react-layout-grid';
 import { Headline4 } from '@material/react-typography';
 // My Components
 import Article from './misc/Article';
-// Context
-import { MyContext } from '../Provider';
 
 /*
   Profile is only available to authenticated users 🔒
@@ -27,9 +25,14 @@ class Profile extends Component {
       articles: [],
       redirect: false,
     };
+    this.getArticles = this.getArticles.bind(this);
   }
 
   componentDidMount() {
+    this.getArticles();
+  }
+
+  getArticles() {
     axios.get('/api/profile')
       .then((response) => {
         if (response.status === 200) {
@@ -51,6 +54,7 @@ class Profile extends Component {
         userId={a.user_id}
         title={a.title}
         blurb={a.blurb}
+        getArticles={this.getArticles}
       />
     ));
     return (
