@@ -44,7 +44,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true }, (err) => {
 */
 
 // serve files from the dist directory
-server.use(express.static(path.join(__dirname, '/public')));
+server.use(express.static(path.join(__dirname, '/public'))); // Needed?
 server.use(express.static('dist'));
 // bodyParser, parses the request body to be a readable json format
 server.use(bodyParser.urlencoded({ extended: false }));
@@ -62,14 +62,6 @@ server.use(passport.session());
 /*
   Routes
 */
-
-// server.get('/api/token', (req, res) => {
-//   if (req.cookies.token) {
-//     res.status(200).send('Token available');
-//   } else {
-//     res.status(401).send('No token found');
-//   }
-// });
 
 server.get('/api/token', (req, res, next) => {
   if (req.cookies.token) {
@@ -96,7 +88,7 @@ server.get('/api/article/:id', (req, res) => {
       Error -> MIME type ('text/html') is not supported
       Need to ask Andrew...
     */
-    if (err) throw err;
+    if (err) console.log('err in get article');
     if (data) {
       res.send(data);
     } else {
@@ -105,12 +97,6 @@ server.get('/api/article/:id', (req, res) => {
   });
 });
 
-// server.delete('/api/article/:id', (req, res) => {
-//   // console.log(req.params.id);
-//   // console.log('IN THE SEERVER');
-//   res.status(200).send('Successfully deleted');
-// });
-
 server.delete('/api/article/:id', (req, res) => {
   Article.deleteOne({ _id: new ObjectID(req.params.id) }, (err) => {
     if (err) throw err;
@@ -118,7 +104,7 @@ server.delete('/api/article/:id', (req, res) => {
   });
 });
 
-server.post('/api/article/:id', (req, res) => {
+server.post('/api/user/:id/article', (req, res) => {
   const { title, blurb, content } = req.body;
   if (title === '' || title === 'Title' || blurb === '' || blurb === 'Give the reader a summary..' || content === '' || content === 'Tell your story..') {
     res.status(500).send("You've left something out.");
@@ -135,6 +121,13 @@ server.post('/api/article/:id', (req, res) => {
       res.status(500).send('Error publishing story');
       return;
     }
+    res.status(200).send('Successfully published');
+  });
+});
+
+server.post('/api/article/:id', (req, res) => {
+  Article.updateOne({ _id: new ObjectID(req.params.id) }, { $set: req.body }, (err) => {
+    if (err) throw err;
     res.status(200).send('Successfully published');
   });
 });

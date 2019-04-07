@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 // Material Components
 import { Cell, Row } from '@material/react-layout-grid';
@@ -19,7 +20,7 @@ import { MyContext } from '../Provider';
   New is where users submit new articles
 */
 
-class New extends Component {
+class Publish extends Component {
   static contextType = MyContext;
 
   constructor() {
@@ -29,10 +30,25 @@ class New extends Component {
       blurb: 'Give the reader a summary..',
       content: 'Tell your story..',
       error: '',
+      update: false,
       redirect: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const { match } = this.props;
+    axios.get(`/api/article/${match.params.id}`)
+      .then((response) => {
+        this.setState({
+          title: response.data.title,
+          blurb: response.data.blurb,
+          content: response.data.content,
+          update: true,
+        });
+      })
+      .catch(() => this.setState({ update: false }));
   }
 
   handleInputChange(event) {
@@ -44,15 +60,23 @@ class New extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const { globalUserId } = this.context;
+    const { match } = this.props;
     const {
       title,
       blurb,
       content,
+      update,
     } = this.state;
     /*
       Make POST Request 📮
     */
-    axios.post(`api/article/${globalUserId}`, {
+    let url;
+    if (update) {
+      url = `/api/article/${match.params.id}`;
+    } else {
+      url = `/api/user/${globalUserId}/article`;
+    }
+    axios.post(url, {
       title,
       blurb,
       content,
@@ -66,7 +90,6 @@ class New extends Component {
         /*
           Validate 🔒
         */
-        console.log(error.response);
         switch (error.response.data) {
           case "You've left something out.":
             this.setState({ error: error.response.data });
@@ -182,6 +205,20 @@ class New extends Component {
   }
 }
 
-New.propTypes = {};
+Publish.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
+  }),
+};
 
-export default New;
+Publish.defaultProps = {
+  match: {
+    params: {
+      id: '',
+    },
+  },
+};
+
+export default Publish;

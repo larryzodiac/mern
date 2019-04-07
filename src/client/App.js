@@ -26,7 +26,7 @@ import Profile from './components/Profile';
 import Signin from './components/Signin';
 import Signup from './components/Signup';
 import ArticlePage from './components/ArticlePage';
-import New from './components/New';
+import Publish from './components/Publish';
 import AppBar from './components/misc/AppBar';
 
 /*
@@ -103,7 +103,7 @@ class App extends Component {
                 <Route path="/signup" render={() => <Signup />} />
                 <Route path="/logout" render={this.logout} />
                 <Route path="/article/:id" render={props => <ArticlePage {...props} />} />
-                <Route path="/new" render={() => <New />} />
+                <Route path="/publish/:id?" render={props => <Publish {...props} />} />
               </Switch>
             </Grid>
           </TopAppBarFixedAdjust>

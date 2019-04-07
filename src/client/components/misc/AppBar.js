@@ -49,7 +49,7 @@ class AppBar extends Component {
                     {loginSuccess ? (
                       // Need to fix DRY
                       <div>
-                        <Link to="/new">
+                        <Link to="/publish">
                           <TopAppBarIcon actionItem tabIndex={0}>
                             <MaterialIcon
                               aria-label="add"

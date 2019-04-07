@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // Material Components
 import { Cell, Row } from '@material/react-layout-grid';
 import { Body2, Headline4, Overline } from '@material/react-typography';
@@ -26,13 +26,10 @@ class Article extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      redirect: false,
-    };
+    this.state = {};
   }
 
   render() {
-    const { redirect } = this.state;
     const {
       id,
       userId,
@@ -48,9 +45,11 @@ class Article extends Component {
           {context => (
             <React.Fragment>
               <Cell desktopColumns={1} tabletColumns={1} phoneColumns={1}>
-                <IconButton>
-                  <MaterialIcon icon="create" />
-                </IconButton>
+                <Link to={`/publish/${id}`}>
+                  <IconButton>
+                    <MaterialIcon icon="create" />
+                  </IconButton>
+                </Link>
               </Cell>
               <Cell desktopColumns={1} tabletColumns={1} phoneColumns={1}>
                 {/* This took FOREVORRRRRRR.. make sure to comment for Andrew */}
@@ -90,7 +89,7 @@ Article.propTypes = {
   userId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   blurb: PropTypes.string.isRequired,
-  pathname: PropTypes.string.isRequired,
+  getArticles: PropTypes.func.isRequired,
 };
 
 export default Article;
