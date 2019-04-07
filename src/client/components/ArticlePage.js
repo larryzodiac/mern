@@ -12,7 +12,8 @@ import { Cell, Row } from '@material/react-layout-grid';
 import { Headline3, Headline4, Headline6 } from '@material/react-typography';
 
 /*
-  Home acts as a dashboard. Browse content or sign in 🏠
+  ArticlePage renders an article for reading 👓
+  I had planned to have comments down the bottom
 */
 
 class ArticlePage extends Component {

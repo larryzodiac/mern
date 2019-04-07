@@ -83,6 +83,7 @@ class Signin extends Component {
       });
   }
 
+  // If requests were successful, we can redirect to the Home
   renderRedirect() {
     const { redirect } = this.state;
     if (redirect) {

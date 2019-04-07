@@ -32,6 +32,7 @@ class Profile extends Component {
     this.getArticles();
   }
 
+  // Use this to trigger re-renders from children
   getArticles() {
     axios.get('/api/profile')
       .then((response) => {

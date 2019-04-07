@@ -18,12 +18,17 @@ import MaterialIcon from '@material/react-material-icon';
 import { MyContext } from '../../Provider';
 
 /*
-  AppBar used for navigation 🚩
+  Article acts as a gateway to an individual article page 🔌
+  It offers options based on login status + context
+  Can also trigger re-renders in parents when an action is performed on an Article
 */
 
 class Article extends Component {
   static contextType = MyContext;
 
+  /*
+    Article needs to be a class as it uses context
+  */
   constructor(props) {
     super(props);
     this.state = {};
@@ -42,6 +47,7 @@ class Article extends Component {
     if (globalUserId === userId) {
       articleOptions = (
         <MyContext.Consumer>
+          {/* Render prop passed as a child */}
           {context => (
             <React.Fragment>
               <Cell desktopColumns={1} tabletColumns={1} phoneColumns={1}>

@@ -61,6 +61,7 @@ class Signup extends Component {
     })
       .then((response) => {
         if (response.status === 200) {
+          // If request successful, redirect to Login(see render)
           this.setState({ redirect: true });
         }
       })
@@ -68,7 +69,6 @@ class Signup extends Component {
         /*
           Validate 🔒
         */
-        console.log(error.response)
         switch (error.response.data) {
           case 'Missing credentials':
             this.setState({

@@ -2,14 +2,17 @@
   Evan MacHale - N00150552
   24.03.19
   App.js
-  + + + + + + + + + + +
-  + World Map 🌀 (Pages)
+  + + + + + + + + + + + +
+  + Galaxy Map 🌀 (Pages)
   + Index
   +   ¬ App             <--- You are here 🚀
-  +     ¬ Portal
-  +       ¬ Signin
-  +       ¬ Signup
-  +     ¬ Home
+  +     ¬ Home          <--- component level
+  +     ¬ Signin
+  +     ¬ Signup
+  +     ¬ Profile
+  +     ¬ Publish
+  +     ¬ ArticlePage
+  +   ¬ misc            <--- utility components
 */
 
 import React, { Component } from 'react';
@@ -34,8 +37,6 @@ import AppBar from './components/misc/AppBar';
 */
 
 export const ContextId = React.createContext('hello');
-export const ThemeContext = React.createContext('hello');
-// export const Context = ContextId;
 
 /*
   App functions as the hub for all component traffic 🚂

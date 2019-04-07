@@ -17,7 +17,10 @@ import { Button as Btn } from '@material/react-typography';
 import { MyContext } from '../Provider';
 
 /*
-  New is where users submit new articles
+  Publish is where users submit new articles ✒️
+  This component takes an optional URL parametre ':id?' from react-router
+  Depending on whether the id exists or not
+  Publish displays a article template(create) or populated article(update) for submission
 */
 
 class Publish extends Component {
@@ -37,6 +40,7 @@ class Publish extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  // If an article is found, populate the form + set update true
   componentDidMount() {
     const { match } = this.props;
     axios.get(`/api/article/${match.params.id}`)
@@ -69,6 +73,7 @@ class Publish extends Component {
     } = this.state;
     /*
       Make POST Request 📮
+      If update is true set the appropriate api endpoint URL(for create or update)
     */
     let url;
     if (update) {
@@ -213,6 +218,7 @@ Publish.propTypes = {
   }),
 };
 
+// :id? is optional, default it to a blank string
 Publish.defaultProps = {
   match: {
     params: {

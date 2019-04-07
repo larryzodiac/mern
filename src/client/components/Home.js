@@ -29,6 +29,7 @@ class Home extends Component {
     this.getArticles();
   }
 
+  // Use this to trigger re-renders from children
   getArticles() {
     axios.get('/api/home')
       .then(response => this.setState({ articles: response.data }));
