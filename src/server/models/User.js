@@ -6,7 +6,7 @@
 
 /*
   Schema maps to a MongoDB collection + defines the shape of documents within that collection
-  user_id -> 12M foreign key 
+  user_id -> 12M foreign key
 */
 
 /* eslint prefer-destructuring: 0 */
