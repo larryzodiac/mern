@@ -60,9 +60,13 @@ server.use(passport.initialize());
 server.use(passport.session());
 
 /*
-  Routes
+  Authentication Routes
 */
 
+/*
+  Request made in App.js
+  Using JWT Check to see if the user has logged in recently
+*/
 server.get('/api/token', (req, res, next) => {
   if (req.cookies.token) {
     req.headers.authorization = `Bearer ${req.cookies.token}`;
@@ -74,64 +78,10 @@ server.get('/api/token', (req, res, next) => {
   }
 });
 
-server.get('/api/home', (req, res) => {
-  Article.find({}, (err, data) => {
-    if (err) throw err;
-    res.send(data);
-  });
-});
-
-server.get('/api/article/:id', (req, res) => {
-  Article.findOne({ _id: req.params.id }, (err, data) => {
-    /*
-      Error handling if the id param is wrong
-      Error -> MIME type ('text/html') is not supported
-      Need to ask Andrew...
-    */
-    if (err) console.log('err in get article');
-    if (data) {
-      res.send(data);
-    } else {
-      res.status(404).send('Article not found');
-    }
-  });
-});
-
-server.delete('/api/article/:id', (req, res) => {
-  Article.deleteOne({ _id: new ObjectID(req.params.id) }, (err) => {
-    if (err) throw err;
-    res.status(200).send('Successfully deleted');
-  });
-});
-
-server.post('/api/user/:id/article', (req, res) => {
-  const { title, blurb, content } = req.body;
-  if (title === '' || title === 'Title' || blurb === '' || blurb === 'Give the reader a summary..' || content === '' || content === 'Tell your story..') {
-    res.status(500).send("You've left something out.");
-    return;
-  }
-  const article = new Article({
-    title,
-    blurb,
-    content,
-    user_id: req.params.id,
-  });
-  article.save((err) => {
-    if (err) {
-      res.status(500).send('Error publishing story');
-      return;
-    }
-    res.status(200).send('Successfully published');
-  });
-});
-
-server.post('/api/article/:id', (req, res) => {
-  Article.updateOne({ _id: new ObjectID(req.params.id) }, { $set: req.body }, (err) => {
-    if (err) throw err;
-    res.status(200).send('Successfully published');
-  });
-});
-
+/*
+  Request made in Profile.js
+  If the user is logged in  show their articles, else redirect
+*/
 server.get('/api/profile', (req, res, next) => {
   /*
     For some DAFT and frustrating reason, my headers don't have an
@@ -149,6 +99,10 @@ server.get('/api/profile', (req, res, next) => {
   })(req, res, next);
 });
 
+/*
+  Request made in Signup.js
+  Validates the req.body + saves a new User
+*/
 server.post('/api/signup', (req, res) => {
   const {
     username,
@@ -184,6 +138,11 @@ server.post('/api/signup', (req, res) => {
   });
 });
 
+/*
+  Request made in Signin.js
+  Using local strategy from Passport.js w/ custom callback
+  If strategy successful, initialise a new JWT
+*/
 server.post('/api/signin', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     /*
@@ -214,7 +173,94 @@ server.post('/api/signin', (req, res, next) => {
   })(req, res, next);
 });
 
+/*
+  Request made in AppBar.js
+  Removes the JWT cookie
+*/
 server.get('/api/logout', (req, res) => {
   req.logout();
   res.cookie('token', '', { httpOnly: true }).sendStatus(200);
+});
+
+/*
+  Routes
+*/
+
+/*
+  Request made in Home.js
+  Returns all articles on the site
+*/
+server.get('/api/home', (req, res) => {
+  Article.find({}, (err, data) => {
+    if (err) throw err;
+    res.send(data);
+  });
+});
+
+/*
+  Request made in ArticlePage.js + Publish.js
+  ArticlePage is for reading
+  Publish populates a form for updating
+  Returns a specific article that matches the url parametre
+*/
+server.get('/api/article/:id', (req, res) => {
+  Article.findOne({ _id: req.params.id }, (err, data) => {
+    /*
+      Error handling if the id param is wrong
+      Error -> MIME type ('text/html') is not supported
+      Need to ask Andrew...
+    */
+    if (err) console.log('err in get article');
+    if (data) {
+      res.send(data);
+    } else {
+      res.status(404).send('Article not found');
+    }
+  });
+});
+
+/*
+  Request made in Provider.js
+  An axios delete request method is defined in context
+  It is in Provider as there are multiple pages where a user can see their articles, and their delete options
+*/
+server.delete('/api/article/:id', (req, res) => {
+  Article.deleteOne({ _id: new ObjectID(req.params.id) }, (err) => {
+    if (err) throw err;
+    res.status(200).send('Successfully deleted');
+  });
+});
+
+/*
+  Both of the following routes are called in Publish.js
+  The route chosen is defined in React based on a case
+  '/api/user/:id/article' is used to update an existing article
+  '/api/article/:id' is used to create a new article
+*/
+server.post('/api/user/:id/article', (req, res) => {
+  const { title, blurb, content } = req.body;
+  if (title === '' || title === 'Title' || blurb === '' || blurb === 'Give the reader a summary..' || content === '' || content === 'Tell your story..') {
+    res.status(500).send("You've left something out.");
+    return;
+  }
+  const article = new Article({
+    title,
+    blurb,
+    content,
+    user_id: req.params.id,
+  });
+  article.save((err) => {
+    if (err) {
+      res.status(500).send('Error publishing story');
+      return;
+    }
+    res.status(200).send('Successfully published');
+  });
+});
+
+server.post('/api/article/:id', (req, res) => {
+  Article.updateOne({ _id: new ObjectID(req.params.id) }, { $set: req.body }, (err) => {
+    if (err) throw err;
+    res.status(200).send('Successfully published');
+  });
 });

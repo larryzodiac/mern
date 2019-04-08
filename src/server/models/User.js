@@ -4,6 +4,11 @@
   User.js Model Object
 */
 
+/*
+  Schema maps to a MongoDB collection + defines the shape of documents within that collection
+  user_id -> 12M foreign key
+*/
+
 /* eslint prefer-destructuring: 0 */
 /* eslint no-useless-escape: 0 */
 /* eslint func-names: 0 */
@@ -25,6 +30,7 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
 });
 
+// Use Andrew's methods
 // UserSchema.methods.checkPassword = p => bcrypt.compareSync(p, this.password);
 // UserSchema.methods.hash = p => bcrypt.hashSync(p, 10);
 

@@ -21,10 +21,16 @@ opts.secretOrKey = process.env.SECRET;
 // opts.issuer = 'accounts.examplesoft.com';
 // opts.audience = 'yoursite.net';
 
+/*
+  The local authentication strategy authenticates users using a username and password.
+  The strategy requires a verify callback, which accepts the credentials and calls done providing a user.
+*/
+
 passport.use(new LocalStrategy((username, password, done) => {
   User.findOne({ username }, (err, user) => {
     if (err) { return done(err); }
     if (!user) { return done(null, false, { message: 'Incorrect username' }); }
+    // Calling Mongoose User.js method
     user.isCorrectPassword(password, (er, same) => {
       if (!same || er) return done(null, false, { message: 'Incorrect password' });
       return done(null, user);
@@ -32,17 +38,22 @@ passport.use(new LocalStrategy((username, password, done) => {
   });
 }));
 
+/*
+  new JwtStrategy(options, verify)
+  opts above is an object literal containing options to control how the token is extracted from the request or verified.
+*/
+
 passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
   User.findOne({ username: jwtPayload }, (err, user) => {
     if (err) {
-      console.log('PASSPORT ERROR');
+      // console.log('PASSPORT ERROR');
       return done(err, false);
     }
     if (user) {
-      console.log('PASSPORT USER');
+      // console.log('PASSPORT USER');
       return done(null, user);
     }
-    console.log('PASSPORT ELSE');
+    // console.log('PASSPORT ELSE');
     return done(null, false);
   });
 }));
