@@ -14,7 +14,7 @@ This project is an attempt to mimic [Medium](https://medium.com/). An open publi
 
 # User Stories
 
-There are two types of users who use Medium. The first is a casual reader who browses and reads articles they enjoy; The second is a writer player who uses Medium as a platform for publishing their material.
+There are two types of users who use Medium. The first is a casual reader who browses and reads articles they enjoy; The second is a writer who uses Medium as a platform for publishing their material.
 
 Casual reader - conditions/satisfactions :
 
@@ -40,6 +40,7 @@ Wireframe (pre-development) from stories depicts three pages :
 - Home page
 - Signin/Signup page
 - Profile page
+- Publish page
 
 ![Home](https://raw.githubusercontent.com/larryzodiac/mern/master/report/images/home.PNG)
 
@@ -492,6 +493,7 @@ server.delete('/api/article/:id', (req, res) => {
 - [Authentication For Your React and Express Application w/ JSON Web Tokens](https://medium.com/@faizanv/authentication-for-your-react-and-express-application-w-json-web-tokens-923515826e0)
 - [Wes Bos ~ Context API](https://www.youtube.com/watch?v=XLJN4JfniH4)
 - [Adding a Sass Stylesheet](https://facebook.github.io/create-react-app/docs/adding-a-sass-stylesheet)
+- [Passport Docs](http://www.passportjs.org/docs/)
 
 # Reflection
 
