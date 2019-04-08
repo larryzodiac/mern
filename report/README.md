@@ -41,6 +41,14 @@ Wireframe (pre-development) from stories depicts three pages :
 - Signin/Signup page
 - Profile page
 
+![Home](https://raw.githubusercontent.com/larryzodiac/mern/master/report/images/home.PNG)
+
+![Signin](https://raw.githubusercontent.com/larryzodiac/mern/master/report/images/save.PNG)
+
+![Profile](https://raw.githubusercontent.com/larryzodiac/mern/master/report/images/profile.PNG)
+
+![Publish](https://raw.githubusercontent.com/larryzodiac/mern/master/report/images/publish.PNG)
+
 Each page will be wrapped within a number of top-level components that implement _React Router, React Context, MDC AppBar_ and _MDC Layout Grid._
 
 # Application Description
