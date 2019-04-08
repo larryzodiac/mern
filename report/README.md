@@ -392,7 +392,89 @@ class Signup extends Component {
 }
 ```
 
+# Server
 
+Briefly, the server is comprised of three parts.
+
+The `models` folder contains mongoose schema which maps data to our _MongoDB collections._ They define the shape of documents within a collection via the rules and methods we create.
+
+`Passport.js` conatins what are known as _strategies._ The two strategies used are the `local` and `jwt` strategies.
+
+The `local` strategy is invoked on a _sign in_ operation. It requires a username and password for authenticating the existence of a user. If successful, a new user session is initialised in the form of a signed `jwt`.
+
+```javascript
+passport.use(new LocalStrategy((username, password, done) => {
+  User.findOne({ username }, (err, user) => {...});
+}));
+```
+
+The `jwt` strategy is invoked when a user attempts to access a locked portion of the application. It uses a set of `opts` to extract a cookie from the browser and check to see if it matches an existing signed user token.
+
+```javascript
+const opts = {};
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = process.env.SECRET;
+
+passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
+  User.findOne({ username: jwtPayload }, (err, user) => {...});
+}));
+```
+
+Both of these strategies are invoked via `server.js` when a request is made to an API endpoint. The request is wrapped around a custom Passport callback which carries out the passport tasks.
+
+e.g:
+
+```javascript
+server.get('/api/profile', (req, res, next) => {
+  req.headers.authorization = `Bearer ${req.cookies.token}`;
+  passport.authenticate('jwt', (err, user) => {...})(req, res, next);
+});
+```
+
+Lastly, the `server.js` contains our connection to the database:
+
+```javascript
+const dbURI = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
+
+mongoose.connect(dbURI, { useNewUrlParser: true }, (err) => {
+  if (err) {
+    throw err;
+  } else {
+    server.listen(...);
+  }
+});
+```
+
+Middleware for our Express requests, like `bodyParser` so Json is accessible, `cookieParser` for easy access via `req.cookie`, and `express-session` and `passport` for use with authentication:
+
+```javascript
+server.use(bodyParser.urlencoded({ extended: false }));
+server.use(bodyParser.json());
+server.use(cookieParser());
+server.use(session({
+  secret: process.env.SECRET,
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  resave: false,
+  saveUninitialized: false,
+}));
+server.use(passport.initialize());
+server.use(passport.session());
+```
+
+The rest are express routes for our React application. Each route has a specific URL whereby Axios can send a request to.
+
+Each route uses our middleware to extract data, use our passports and use Mongooes to save data to our database. When complete, express will return a respones to the client.
+
+e.g:
+
+```javascript
+server.delete('/api/article/:id', (req, res) => {
+  Article.deleteOne({ _id: new ObjectID(req.params.id) }, (err) => {
+    if (err) throw err;
+    res.status(200).send('Successfully deleted');
+  });
+});
+```
 
 # References
 
@@ -402,3 +484,23 @@ class Signup extends Component {
 - [Authentication For Your React and Express Application w/ JSON Web Tokens](https://medium.com/@faizanv/authentication-for-your-react-and-express-application-w-json-web-tokens-923515826e0)
 - [Wes Bos ~ Context API](https://www.youtube.com/watch?v=XLJN4JfniH4)
 - [Adding a Sass Stylesheet](https://facebook.github.io/create-react-app/docs/adding-a-sass-stylesheet)
+
+# Reflection
+
+This project was a mixed bag for me. I very much enjoy React as a framework with it's lego-like approach to building applications. However, with the introduction of the server-side content I didn't feel confident.
+
+Atlas, MongoDB, Mongoose, Axios and React Router all came very quick to me I think, but I made the mistake of trying to integrate Passport into my project.
+
+The problem I faced was that I really didn't know as much as I thought I did about browsers. That is to say, I spend my life in the console, yet I've never even thought to look at the _application_ tab or _network_ tab or even consider what HTTP was doing.
+
+I struggled to understand what exactly I was telling the browser to do. I understand routes, or middleware, but what a cookie actually is, where it's stored, how to access it, how to debug it etc, was challenging.
+
+It's a simple hurdle I'd assume, but networks was never my strong suit and trying to pick up passport took a heap of my time.
+
+I didn't for example get all the data I wanted into the application, or UI elements like search bars. On top of this I tried React's Context which is great. It took me a while but I enjoyed it.
+
+Between trying new React concepts and re-evaluating my understand of HTTP, I lost a lot of time, but again, this project isn't about design.
+
+Lastly, Webpack was a nightmare for a while. I understand what it does, but the syntax always got me and I struggled to juggle thinking about how all the different add-ons were packaging things together, but that's documentation I suppose. MDC's resources helped a lot but I still found myself on Stack Overflow often enough.
+
+Overall, I feel I have somewhat improved, especially in contrast to my last two applications.
