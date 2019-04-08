@@ -1,3 +1,14 @@
+/*
+  Evan MacHale - N00150552
+  23.03.19
+  Article.js
+*/
+
+/*
+  Schema maps to a MongoDB collection + defines the shape of documents within that collection
+  user_id -> 12M foreign key
+*/
+
 const mongoose = require('mongoose');
 
 const ArticleSchema = mongoose.Schema({
