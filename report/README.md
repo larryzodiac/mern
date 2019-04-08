@@ -118,7 +118,7 @@ _AppBar.js_ accepts a single boolean prop from _App.js_ indicating if a user is 
 
 As mentioned, the `<Provider/>` component acts as a top-level wrapper component for React's Context API.
 
-_Provider.js_ is a functional component that returns a context _Provider_ component based on an initialised context. Inside this component is rendered `{props.children}` which enables other components down the tree to access the provider(at the top-level).
+_Provider.js_ is a functional component that returns a context _provider_ component based on an initialised context. Inside this component is rendered `{props.children}` which enables other components down the tree to access the provider(at the top-level).
 
 To access this data we must use what is known as a _Consumer_ in our other components.
 
@@ -132,7 +132,7 @@ const MyContext = React.createContext(defaultValue);
 <MyContext.Consumer />
 ```
 
-Now, wherenever a consumer is rendered, a respective component will have access to context.
+Now, whereever a consumer is rendered, a respective component will have access to context.
 
 The context provider also takes a value prop which passes down the context:
 
@@ -264,6 +264,135 @@ render() {
   // ...
 }
 ```
+
+The `getArticles()` function is seen above as passed to the `<Provider/>` component from `<Article/>` and called from there:
+
+```javascript
+<IconButton onClick={() => context.handleArticleDelete(id, getArticles)} />
+```
+
+### Profile.js
+
+The `<Profile/>` component serves the same function as `<Home/>` but with a slight difference.
+
+_Profile.js_ is for authenticated users only. It makes a request to `/api/profile` and uses passport to authenitcate the user using cookies and JWT.
+
+If the user is not logged in, then react router's redirect component is rendered:
+
+```Javascript
+getArticles() {
+  axios.get('/api/profile')
+    .then((response) => {})
+    .catch(() => this.setState({ redirect: true }));
+}
+// ...
+{ redirect && <Redirect to="/Signin" /> }
+```
+
+### Publish.js
+
+The function of the `<Publish/>` component is to render a form for creating a new article, or, populate the form with an existing article for editing.
+
+This is achieved through react router optional parametres and conditional rendering.
+
+```javascript
+// App.js
+<Route path="/publish/:id?" render={props => <Publish {...props} />} />
+```
+
+When a user clicks on an `<article/>` edit operation, it links to the `<Publish/>` component with a URL parametre holding it's id. A get request for the article is made and the form is populated with response data.
+
+When a user clicks on a new article operation, it links to `<Publish/>` with no id. A get request fails and the form is left blank.
+
+However, both operations require a different express route. This is decided by the `.catch()` function in Axios:
+
+```javascript
+// If an article is found, populate the form + set update true
+componentDidMount() {
+  const { match } = this.props;
+  axios.get(`/api/article/${match.params.id}`)
+    .then((response) => {
+      this.setState({
+        // ...
+        update: true,
+      });
+    })
+    .catch(() => this.setState({ update: false }));
+}
+```
+
+Then depending on the `update` state proprety, a URL is chosen:
+
+```javascript
+let url;
+if (update) {
+  url = `/api/article/${match.params.id}`;
+} else {
+  url = `/api/user/${globalUserId}/article`;
+}
+axios.post(url, {...})
+```
+
+### Signup.js + Signin.js
+
+The functions of both `<Signup/>` and `<Signin/>` are alligned closelly, one being built of the other.
+
+They hold a state for all relevant credentials and matching error fields built into _MDC._
+
+They make post requests to the server for regular validation, Passport authentication, and Mongoose schema validation.
+
+If there are any errors, appropriate response data is sent back to the client and is rendered accordingly via a switch statement in the user interface.
+
+If the requests evaluate to valid, react router's `<Redirect/>` component is again utilised.
+
+Pseudo code for both classes:
+
+```javascript
+class Signup extends Component {
+
+  constructor() {
+    this.state = {
+      username: '',
+      usernameError: '',
+      // ...
+      redirect: false,
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const { username } = this.state;
+    // Make POST Request 📮
+    axios.post('api/signup', {...})
+      .then((response) => {
+        if (response.status === 200) this.setState({ redirect: true });
+      })
+      .catch((error) => {
+        // Validate 🔒
+        switch (error.response.data) {
+          case 'Missing credentials':
+            this.setState({
+              usernameError: error.response.data,
+            });
+            break;
+        }
+      });
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        { redirect && <Redirect to="/Signin" /> }
+        <form onSubmit={this.handleSubmit} />
+      </React.Fragment>
+    );
+  }
+
+}
+```
+
+
 
 # References
 
