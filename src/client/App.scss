@@ -1,17 +1,23 @@
-/*
-  Evan MacHale - N00150552
-  23.03.19
-  App.scss
-*/
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Serif:300,400,500,700');
+
+// fonts
+$font-family: 'IBM Plex Serif', serif;
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-heavy: 700;
+$font-height: 1.5;
 
 :root {
-  --mdc-theme-primary: #fff00e;
-  --mdc-theme-secondary: #feeae6;
-  --mdc-theme-on-primary: #0;
-  --mdc-theme-on-secondary: #ff0000;
+  --mdc-theme-primary: #000;
+  --mdc-theme-secondary: #fff;
+  --mdc-theme-on-primary: #000;
+  --mdc-theme-on-secondary: #000;
+  --mdc-theme-surface: #00ff00;
+  --mdc-theme-on-surface: #000
 }
 
 @import '@material/react-button/index.scss';
+@import '@material/react-icon-button/index.scss';
 @import '@material/react-layout-grid/index.scss';
 @import '@material/react-material-icon/index.scss';
 @import '@material/react-text-field/index.scss';
@@ -19,3 +25,45 @@
 @import '@material/react-typography/index.scss';
 
 @import './style-overrides/react-top-app-bar-overrides';
+@import './style-overrides/react-text-field-overrides.scss';
+
+.mdc-typography,
+.mdc-text-field__input {
+  font-family: 'IBM Plex Serif', serif;
+}
+
+.type-light {
+  font-weight: $font-weight-light;
+}
+
+.type-regular {
+  font-weight: $font-weight-regular;
+}
+
+.type-heavy {
+  font-weight: $font-weight-heavy;
+}
+
+/*
+  Custom Styles
+*/
+
+a {
+  color: #000;
+  text-decoration: none;
+}
+
+.title {
+  margin: 0rem;
+}
+
+.top-app-bar-grid {
+  margin: 0rem !important;
+  padding-top: 0rem !important;
+  padding-bottom: 0rem !important;
+}
+
+.error {
+  font-family: sans-serif;
+  color: red;
+}

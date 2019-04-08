@@ -2,19 +2,12 @@
   Evan MacHale - N00150552
   24.03.19
   Signin.js
-  + + + + + + + + + + +
-  + World Map 🌀 (Pages)
-  + Index
-  +   ¬ App
-  +     ¬ Portal
-  +       ¬ Signin      <--- You are here 🚀
-  +       ¬ Signup
-  +     ¬ World
 */
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import axios from 'axios';
+import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 // Material Design Components
 import { Cell, Row } from '@material/react-layout-grid';
 import Button from '@material/react-button';
@@ -30,54 +23,85 @@ class Signin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      username: '',
+      usernameError: '',
       password: '',
+      passwordError: '',
+      redirect: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.renderRedirect = this.renderRedirect.bind(this);
   }
 
   handleInputChange(event) {
     const { target } = event;
-    const { value } = target;
-    const { name } = target;
-
-    this.setState({
-      [name]: value,
-    });
+    const { value, name } = target;
+    this.setState({ [name]: value });
   }
 
-  // handleSubmit(event) {
-  //   event.preventDefault();
-  //   const { email } = this.state;
-  //   const { password } = this.state;
-  //   const { setLoginSuccess } = this.props;
-  //   /*
-  //     react-router Route Component Props History 🔌
-  //     Allows us to redirect by accessing the history prop!
-  //     https://medium.com/@anneeb/redirecting-in-react-4de5e517354a
-  //   */
-  //   const { history } = this.props;
-  //   /*
-  //     Make GET Request 📮
-  //   */
-  //   axios.post('api/users/signin', { email, password })
-  //     .then((response) => {
-  //       if (response.data.email === email && response.data.password === password) {
-  //         setLoginSuccess(response.data._id);
-  //         history.push('/');
-  //       } else {
-  //         console.log('incorrect data');
-  //       }
-  //     })
-  //     .catch(error => console.log(error));
-  // }
+  handleSubmit(event) {
+    event.preventDefault();
+    const { username, password } = this.state;
+    const { setLoginSuccess } = this.props;
+    /*
+      Make POST Request 📮
+    */
+    axios.post('/api/signin', { username, password })
+      .then((response) => {
+        if (response.status === 200) {
+          // Maybe pass user_id here for context?
+          setLoginSuccess(response.data);
+          this.setState({ redirect: true });
+        }
+      })
+      .catch((error) => {
+        /*
+          Validate 🔒
+        */
+        switch (error.response.data.message.message) {
+          case 'Missing credentials':
+            this.setState({
+              usernameError: error.response.data.message.message,
+              passwordError: error.response.data.message.message,
+            });
+            break;
+          case 'Incorrect username':
+            this.setState({
+              usernameError: error.response.data.message.message,
+              passwordError: '',
+            });
+            break;
+          case 'Incorrect password':
+            this.setState({
+              usernameError: '',
+              passwordError: error.response.data.message.message,
+            });
+            break;
+          default:
+        }
+      });
+  }
+
+  // If requests were successful, we can redirect to the Home
+  renderRedirect() {
+    const { redirect } = this.state;
+    if (redirect) {
+      return <Redirect to="/" />;
+    }
+    return <React.Fragment />;
+  }
 
   render() {
-    const { email } = this.state;
-    const { password } = this.state;
+    const {
+      username,
+      usernameError,
+      password,
+      passwordError,
+    } = this.state;
     return (
       <React.Fragment>
+        {this.renderRedirect()}
         <Row>
           <Cell columns={5} />
           <Cell columns={2}>
@@ -87,13 +111,13 @@ class Signin extends Component {
                   <Headline4>Welcome Back</Headline4>
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="email" label="Email" value={email} onChange={this.handleInputChange} />
+                  <Text name="username" label="Username" value={username} error={usernameError} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
-                  <Text name="password" label="Password" value={password} onChange={this.handleInputChange} />
+                  <Text name="password" type="password" label="Password" value={password} error={passwordError} onChange={this.handleInputChange} />
                 </Cell>
                 <Cell columns={12}>
-                  <Button unelevated type="submit" value="Submit">Sign in</Button>
+                  <Button type="submit" value="Submit">Sign in</Button>
                 </Cell>
               </Row>
             </form>
@@ -105,6 +129,8 @@ class Signin extends Component {
   }
 }
 
-Signin.propTypes = {};
+Signin.propTypes = {
+  setLoginSuccess: PropTypes.func.isRequired,
+};
 
 export default Signin;

@@ -1,0 +1,48 @@
+/*
+  Evan MacHale - N00150552
+  06.04.19
+  react-text-field-overrides.scss
+  This file is mostly for the Publish component
+*/
+
+@import "@material/textfield/mixins";
+@import "colours";
+
+/*
+  The title
+*/
+
+.full-width {
+  margin-top: 4rem;
+}
+
+.full-width-input {
+  font-size: 3rem;
+  padding-bottom: 1rem !important;
+}
+
+/*
+  The content
+*/
+
+.full-width-text-area-blurb {
+  @include mdc-text-field-textarea-stroke-color($transparent);
+}
+
+.full-width-text-area-content {
+  @include mdc-text-field-textarea-stroke-color($transparent);
+}
+
+.full-width-text-area-input {
+  padding-left: 0rem !important;
+  padding-right: 0rem !important;
+  font-size: 1.25rem !important;
+  line-height: 2rem !important;
+  letter-spacing: 0.0125em !important;
+  border-color: #fff !important;
+}
+
+.mdc-text-field--textarea.mdc-text-field--focused:not(.mdc-text-field--disabled) {
+  border: none !important;
+  border-color: #fff !important;
+}

@@ -1,11 +1,12 @@
 /*
   Evan MacHale - N00150552
-  24.03.19
-  Home.js
+  28.03.19
+  Profile.js
 */
 
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 // Material Components
 import { Cell, Row } from '@material/react-layout-grid';
 import { Headline4 } from '@material/react-typography';
@@ -13,14 +14,16 @@ import { Headline4 } from '@material/react-typography';
 import Article from './misc/Article';
 
 /*
-  Home acts as a dashboard. Browse content or sign in 🏠
+  Profile is only available to authenticated users 🔒
 */
 
-class Home extends Component {
+class Profile extends Component {
   constructor() {
     super();
     this.state = {
+      profile: 'Loading...',
       articles: [],
+      redirect: false,
     };
     this.getArticles = this.getArticles.bind(this);
   }
@@ -31,12 +34,20 @@ class Home extends Component {
 
   // Use this to trigger re-renders from children
   getArticles() {
-    axios.get('/api/home')
-      .then(response => this.setState({ articles: response.data }));
+    axios.get('/api/profile')
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState({
+            profile: response.data.user,
+            articles: response.data.articles,
+          });
+        }
+      })
+      .catch(() => this.setState({ redirect: true }));
   }
 
   render() {
-    const { articles } = this.state;
+    const { profile, articles, redirect } = this.state;
     const articlesList = articles.map(a => (
       <Article
         key={a._id}
@@ -49,37 +60,33 @@ class Home extends Component {
     ));
     return (
       <React.Fragment>
+        { redirect && <Redirect to="/Signin" /> }
         <Row>
-          <Cell desktopColumns={3} tabletColumns={1} />
-          <Cell desktopColumns={6} tabletColumns={6} phoneColumns={4}>
+          <Cell desktopColumns={4} tabletColumns={1} />
+          <Cell desktopColumns={4} tabletColumns={6} phoneColumns={4}>
             <Row>
               <Cell desktopColumns={12} tabletColumns={8}>
-                <Headline4>Search Articles</Headline4>
+                <Headline4>{ `${profile.username}'s Articles` }</Headline4>
               </Cell>
             </Row>
             <Row>
-              <Cell desktopColumns={12} tabletColumns={8}>
+              <Cell desktopColumns={10} tabletColumns={8}>
                 <hr />
                 <br />
               </Cell>
             </Row>
             <Row>
-              <Cell desktopColumns={7} tabletColumns={5}>
+              <Cell desktopColumns={10} tabletColumns={8}>
                 {/* Rows in here per articles */}
                 { articlesList }
               </Cell>
-              <Cell desktopColumns={1} tabletColumns={1} />
-              <Cell desktopColumns={4} tabletColumns={2}>
-                {/* Rows in here per input */}
-                <p>selects</p>
-              </Cell>
             </Row>
           </Cell>
-          <Cell desktopColumns={3} tabletColumns={1} />
+          <Cell desktopColumns={4} tabletColumns={1} />
         </Row>
       </React.Fragment>
     );
   }
 }
 
-export default Home;
+export default Profile;

@@ -1,0 +1,6 @@
+{"_id":{"$oid":"5ca370040f4eab2e104901e8"},"username":"Dan Abnett","email":"dan@example.com","password":"$2a$10$iu2do60NfsrzzNEoIhbibuuUx/3vbsPhxvXpEqptGLEmdQnzWeZRy","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5ca370aa0f4eab2e104901e9"},"username":"Aaron Dembski-Bowden","email":"bowden@example.com","password":"$2a$10$ozpRePvbCG9QtJCBgs5F1ebwet.Jw5dit.5hRCg953./OmyND9Kjm","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5ca370c30f4eab2e104901ea"},"username":"John French","email":"john.french@example.com","password":"$2a$10$uQXsQDeFzqwcpaVJg1fo7.WIE202RpSEYGZhdxrmfX7KHVdq/yfw6","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5ca370db0f4eab2e104901eb"},"username":"Guy Haley","email":"g.haley@example.com","password":"$2a$10$Bjg9zB1L/Gdd/uf3rolzOedELHcIvf2h/EQcOr962QmIniNKyV/a2","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5ca370f50f4eab2e104901ec"},"username":"Gav Thorpe","email":"gavthorpe@example.com","password":"$2a$10$55IRW8A./VfKbjaVDZPq1.zPbSsoc5RPJUaRlUk.CGEwsifvB75K6","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5ca371120f4eab2e104901ed"},"username":"Ben Counter","email":"bc@example.com","password":"$2a$10$vE2dBV5Q0VcW8gEGmIcKvexRGMqvdx7FXhtYTRV7YiACxzIAv5fV6","__v":{"$numberInt":"0"}}

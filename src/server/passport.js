@@ -1,43 +1,61 @@
 /*
   Evan MacHale - N00150552
   26.03.19
-  strategy.js
+  passport.js
 */
+
+/* eslint consistent-return: 0 */
 
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const { ExtractJwt } = require('passport-jwt');
 const User = require('./models/User');
+// loads environment variables from a .env file into process.env
+require('dotenv').config();
 
-passport.serializeUser((user, done) => {
-  console.log('*** serializeUser called, user: ');
-  console.log(user); // the whole raw user object!
-  console.log('---------');
-  done(null, { _id: user._id });
-});
+const opts = {};
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('JWT');
+opts.secretOrKey = process.env.SECRET;
+// opts.issuer = 'accounts.examplesoft.com';
+// opts.audience = 'yoursite.net';
 
-passport.deserializeUser((id, done) => {
-  console.log('DeserializeUser called');
-  User.findOne({ _id: id }, 'username', (err, result) => {
-    console.log('*** Deserialize user, user:');
-    console.log(result);
-    console.log('--------------');
-    done(null, result);
-  });
-});
+/*
+  The local authentication strategy authenticates users using a username and password.
+  The strategy requires a verify callback, which accepts the credentials and calls done providing a user.
+*/
 
-passport.use(new LocalStrategy(
-  ((username, password, done) => {
-    User.findOne({ username }, (err, result) => {
-      if (err) { return done(err); }
-      if (!result) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (!result.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-      return done(null, result);
+passport.use(new LocalStrategy((username, password, done) => {
+  User.findOne({ username }, (err, user) => {
+    if (err) { return done(err); }
+    if (!user) { return done(null, false, { message: 'Incorrect username' }); }
+    // Calling Mongoose User.js method
+    user.isCorrectPassword(password, (er, same) => {
+      if (!same || er) return done(null, false, { message: 'Incorrect password' });
+      return done(null, user);
     });
-  }),
-));
+  });
+}));
+
+/*
+  new JwtStrategy(options, verify)
+  opts above is an object literal containing options to control how the token is extracted from the request or verified.
+*/
+
+passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
+  User.findOne({ username: jwtPayload }, (err, user) => {
+    if (err) {
+      // console.log('PASSPORT ERROR');
+      return done(err, false);
+    }
+    if (user) {
+      // console.log('PASSPORT USER');
+      return done(null, user);
+    }
+    // console.log('PASSPORT ELSE');
+    return done(null, false);
+  });
+}));
 
 module.exports = passport;
